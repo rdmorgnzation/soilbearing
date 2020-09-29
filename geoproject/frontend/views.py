@@ -4,6 +4,8 @@ from django.core.files.storage import FileSystemStorage
 from rest_framework.parsers import JSONParser
 from .models import data
 from .serializers import dataSerializer
+from rest_framework.response import Response
+from rest_framework import status
 # Create your views here.
 
 
@@ -21,3 +23,11 @@ def data_list(request):
         values = data.objects.all()
         serializer = dataSerializer(values, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        serializer = dataSerializer(data=request.data, many=True)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

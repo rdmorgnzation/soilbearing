@@ -1,20 +1,54 @@
 import React, { Component } from "react";
 
 class slayerediting extends Component {
-    render() {
-        return (
-            <div className="">
-                <h2>HELLO</h2>
-                <p>Cras facilisis urna ornare ex volutpat, et
-                convallis erat elementum. Ut aliquam, ipsum vitae
-                gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                metus nec massa. Maecenas hendrerit laoreet augue
-                nec molestie. Cum sociis natoque penatibus et magnis
-        dis parturient montes, nascetur ridiculus mus.</p>
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isLoaded: false,
+            items: []
+        };
+    }
 
-                <p>Duis a turpis sed lacus dapibus elementum sed eu lectus.</p>
-            </div>
-        );
+    componentDidMount() {
+        fetch("/data")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        items: result
+                    });
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }
+
+    render() {
+        const { error, isLoaded, items } = this.state;
+        if (error) {
+            return <div>Error: {error.message}</div>;
+        } else if (!isLoaded) {
+            return <div>Loading...</div>;
+        } else {
+            return (
+                <ul>
+                    {items.map(item => (
+                        <li key={item.id}>
+                            {item.id} {item.SPT} {item.Nvalue}
+                        </li>
+                    ))}
+                </ul>
+            );
+        }
     }
 }
 

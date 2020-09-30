@@ -245,9 +245,9 @@ class slayerediting extends Component {
                             onRowAdd: newData =>
                                 new Promise((resolve, reject) => {
                                     setTimeout(() => {
-                                        const edit = { edit: 1 }
+                                        const edit = { edit: 1 }  //edit=1=addrow
                                         newData = [newData, edit]
-                                        console.log(newData)
+                                        // console.log(newData)
                                         fetch("/datap/",
                                             {
                                                 method: 'POST',
@@ -256,7 +256,6 @@ class slayerediting extends Component {
                                                 },
                                                 body: JSON.stringify(newData),
                                             }
-
                                         );
                                         this.setState({ requiresloading: true });
                                         resolve();
@@ -265,22 +264,35 @@ class slayerediting extends Component {
                             onRowUpdate: (newData, oldData) =>
                                 new Promise((resolve, reject) => {
                                     setTimeout(() => {
-                                        const dataUpdate = [...data];
-                                        const index = oldData.tableData.id;
-                                        dataUpdate[index] = newData;
-                                        data.push([...dataUpdate]);
-
+                                        const edit = { edit: 2 } //edit=2=rowupdate
+                                        newData = [newData, edit]
+                                        fetch("/datap/",
+                                            {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify(newData)
+                                            }
+                                        );
+                                        this.setState({ requiresloading: true });
                                         resolve();
                                     }, 1000)
                                 }),
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
                                     setTimeout(() => {
-                                        const dataDelete = [...data];
-                                        const index = oldData.tableData.id;
-                                        dataDelete.splice(index, 1);
-                                        data.push([...dataDelete]);
-
+                                        const edit = { edit: 3 } //edit=3=rowdelete
+                                        oldData = [oldData, edit]
+                                        fetch("/datap/",
+                                            {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify(oldData)
+                                            });
+                                        this.setState({ requiresloading: true });
                                         resolve()
                                     }, 1000)
                                 }),

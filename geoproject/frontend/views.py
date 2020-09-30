@@ -26,19 +26,41 @@ def index(request):
 @csrf_exempt
 def data_list_posting(request):
     if request.method == 'POST':
-        listfirst = request.data[0]
-        newdata = data(SPT=listfirst['SPT'], Nvalue=listfirst['Nvalue'], samplingDepth=listfirst['samplingDepth'],
-                       thickness=listfirst['thickness'], classification=listfirst['classification'],
-                       groupSymbol=listfirst['groupSymbol'], layer=listfirst['layer'], gamma=listfirst['gamma'],
-                       waterPercentage=listfirst['waterPercentage'], cValue=listfirst['cValue'],
-                       phiValue=listfirst['phiValue'], GI=listfirst['GI'], Elasticity=listfirst['Elasticity'],
-                       nu=listfirst['nu']
-                       )
-        # deletedata = data.objects.get(pk=2)
-        # deletedata.delete()
-        # olddata = data.objects.get(pk=3)
-        newdata.save()
-        print(request.data)
+        edit = request.data[1]
+        print(edit)
+        if edit['edit'] == 1:
+            listfirst = request.data[0]
+            newdata = data(SPT=listfirst['SPT'], Nvalue=listfirst['Nvalue'], samplingDepth=listfirst['samplingDepth'],
+                           thickness=listfirst['thickness'], classification=listfirst['classification'],
+                           groupSymbol=listfirst['groupSymbol'], layer=listfirst['layer'], gamma=listfirst['gamma'],
+                           waterPercentage=listfirst['waterPercentage'], cValue=listfirst['cValue'],
+                           phiValue=listfirst['phiValue'], GI=listfirst['GI'], Elasticity=listfirst['Elasticity'],
+                           nu=listfirst['nu']
+                           )
+            newdata.save()
+        elif edit['edit'] == 2:
+            listfirst = request.data[0]
+            pk = listfirst['id']
+            newdata = data(SPT=listfirst['SPT'], Nvalue=listfirst['Nvalue'], samplingDepth=listfirst['samplingDepth'],
+                           thickness=listfirst['thickness'], classification=listfirst['classification'],
+                           groupSymbol=listfirst['groupSymbol'], layer=listfirst['layer'], gamma=listfirst['gamma'],
+                           waterPercentage=listfirst['waterPercentage'], cValue=listfirst['cValue'],
+                           phiValue=listfirst['phiValue'], GI=listfirst['GI'], Elasticity=listfirst['Elasticity'],
+                           nu=listfirst['nu']
+                           )
+            editdata = data.objects.get(pk=pk)
+            print(editdata)
+            editdata = newdata
+            editdata.pk = pk
+            editdata.save()
+
+        elif edit['edit'] == 3:
+            listfirst = request.data[0]
+            pk = listfirst['id']
+            data.objects.get(pk=pk).delete()
+            # deletedata = data.objects.get(pk=2)
+            # deletedata.delete()
+            # olddata = data.objects.get(pk=3)
 
         return Response(status=status.HTTP_201_CREATED)
 

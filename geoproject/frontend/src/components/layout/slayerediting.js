@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import MaterialTable from "material-table";
-
+import cookie from "react-cookies";
 
 
 
@@ -10,11 +10,14 @@ class slayerediting extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            items: []
+            items: [],
+            requiresloading: false,
         };
     }
 
-
+    changerequireloading() {
+        this.state.requiresloading = true;
+    }
 
 
     // columns = ["id", "SPT", "N Value", "Sampling Depth", "Thickness", "Classification", "Group Symbol", "Layer", "Gamma", "Water Percentage", "cValue", "phi value", "GI", "Elasticity", "nu"];
@@ -37,7 +40,7 @@ class slayerediting extends Component {
 
 
     componentDidMount() {
-        fetch("/data")
+        fetch("/dataq")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -58,75 +61,113 @@ class slayerediting extends Component {
             )
     }
 
+    componentDidUpdate() {
+        fetch("/dataq")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (this.setState.items != result) {
+                        this.setState({
+                            isLoaded: true,
+                            items: result
+                        });
+                    }
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }
+
+
+
+
     render() {
         const columns = [
             {
                 title: 'id',
                 field: 'id',
+                editable: 'never'
             },
             {
                 title: 'SPT',
                 field: 'SPT',
+                initialEditValue: 20
             },
             {
                 title: 'N Value',
                 field: 'Nvalue',
-            },
-            {
-                title: 'Layer',
-                field: 'layer'
+                initialEditValue: 20
             },
             {
                 title: 'Sampling Depth',
                 field: 'samplingDepth',
+                initialEditValue: 1.5
             },
             {
                 title: 'Thickness',
                 field: 'thickness',
+                initialEditValue: 2
             },
             {
                 title: 'Classification',
                 field: 'classification',
+                initialEditValue: 'sand'
             },
             {
                 title: 'Group Symbol',
                 field: 'groupSymbol',
+                initialEditValue: 'SW'
             },
             {
                 title: 'Layer',
                 field: 'layer',
+                initialEditValue: 'top'
             },
             {
                 title: 'Gamma',
                 field: 'gamma',
+                initialEditValue: 1.4
             },
             {
                 title: 'Water Percentage',
                 field: 'waterPercentage',
+                initialEditValue: 30
+
             },
             {
                 title: 'cValue',
                 field: 'cValue',
+                initialEditValue: 20
             },
             {
                 title: 'phiValue',
                 field: 'phiValue',
+                initialEditValue: 30
             },
             {
                 title: 'GI',
                 field: 'GI',
+                initialEditValue: 'S'
             },
             {
                 title: 'Elasticity',
                 field: 'Elasticity',
+                initialEditValue: 200
             },
             {
                 title: 'nu',
                 field: 'nu',
+                initialEditValue: 120
             }
         ]
 
-        const data = this.state.items;
 
         const { error, isLoaded, items } = this.state;
         if (error) {
@@ -134,8 +175,14 @@ class slayerediting extends Component {
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
+
             return (
                 <div>
+                    <input
+                        type="hidden"
+                        value={cookie.load("csrftoken")}
+                        name="csrfmiddlewaretoken"
+                    />
                     {/* <table className="table table-bordered table-hover table-responsive">
                         <thead className="thead-dark">
                             <tr>
@@ -181,7 +228,9 @@ class slayerediting extends Component {
                         </tbody>
 
                         </table> */}
-                    <MaterialTable title="Data" data={data}
+
+                    <MaterialTable title="Data"
+                        data={this.state.items}
                         columns={columns}
                         options={{
                             search: true,
@@ -193,7 +242,16 @@ class slayerediting extends Component {
                             onRowAdd: newData =>
                                 new Promise((resolve, reject) => {
                                     setTimeout(() => {
-                                        setData([...data, newData]);
+                                        fetch("/datap/",
+                                            {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify(newData),
+                                            }
+
+                                        );
 
                                         resolve();
                                     }, 1000)
@@ -204,7 +262,7 @@ class slayerediting extends Component {
                                         const dataUpdate = [...data];
                                         const index = oldData.tableData.id;
                                         dataUpdate[index] = newData;
-                                        setData([...dataUpdate]);
+                                        data.push([...dataUpdate]);
 
                                         resolve();
                                     }, 1000)
@@ -215,12 +273,14 @@ class slayerediting extends Component {
                                         const dataDelete = [...data];
                                         const index = oldData.tableData.id;
                                         dataDelete.splice(index, 1);
-                                        setData([...dataDelete]);
+                                        data.push([...dataDelete]);
 
                                         resolve()
                                     }, 1000)
                                 }),
-                        }} />
+                        }} >
+
+                    </MaterialTable>
                 </div>
             );
         }

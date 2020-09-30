@@ -26,12 +26,13 @@ def index(request):
 @csrf_exempt
 def data_list_posting(request):
     if request.method == 'POST':
-        newdata = data(SPT=request.data['SPT'], Nvalue=request.data['Nvalue'], samplingDepth=request.data['samplingDepth'],
-                       thickness=request.data['thickness'], classification=request.data['classification'],
-                       groupSymbol=request.data['groupSymbol'], layer=request.data['layer'], gamma=request.data['gamma'],
-                       waterPercentage=request.data['waterPercentage'], cValue=request.data['cValue'],
-                       phiValue=request.data['phiValue'], GI=request.data['GI'], Elasticity=request.data['Elasticity'],
-                       nu=request.data['nu']
+        listfirst = request.data[0]
+        newdata = data(SPT=listfirst['SPT'], Nvalue=listfirst['Nvalue'], samplingDepth=listfirst['samplingDepth'],
+                       thickness=listfirst['thickness'], classification=listfirst['classification'],
+                       groupSymbol=listfirst['groupSymbol'], layer=listfirst['layer'], gamma=listfirst['gamma'],
+                       waterPercentage=listfirst['waterPercentage'], cValue=listfirst['cValue'],
+                       phiValue=listfirst['phiValue'], GI=listfirst['GI'], Elasticity=listfirst['Elasticity'],
+                       nu=listfirst['nu']
                        )
         # deletedata = data.objects.get(pk=2)
         # deletedata.delete()

@@ -13,11 +13,10 @@ class slayerediting extends Component {
             items: [],
             requiresloading: false,
         };
+
     }
 
-    changerequireloading() {
-        this.state.requiresloading = true;
-    }
+
 
 
     // columns = ["id", "SPT", "N Value", "Sampling Depth", "Thickness", "Classification", "Group Symbol", "Layer", "Gamma", "Water Percentage", "cValue", "phi value", "GI", "Elasticity", "nu"];
@@ -46,7 +45,8 @@ class slayerediting extends Component {
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        items: result
+                        items: result,
+                        requiresloading: false
                     });
                 },
                 // Note: it's important to handle errors here
@@ -62,27 +62,30 @@ class slayerediting extends Component {
     }
 
     componentDidUpdate() {
-        fetch("/dataq")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if (this.setState.items != result) {
+        if (this.state.requiresloading) {
+            fetch("/dataq")
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if (this.setState.items != result) {
+                            this.setState({
+                                isLoaded: true,
+                                items: result,
+                                requiresloading: false,
+                            });
+                        }
+                    },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
                         this.setState({
                             isLoaded: true,
-                            items: result
+                            error
                         });
                     }
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
+                )
+        }
     }
 
 
@@ -242,6 +245,9 @@ class slayerediting extends Component {
                             onRowAdd: newData =>
                                 new Promise((resolve, reject) => {
                                     setTimeout(() => {
+                                        const edit = { edit: 1 }
+                                        newData = [newData, edit]
+                                        console.log(newData)
                                         fetch("/datap/",
                                             {
                                                 method: 'POST',
@@ -252,7 +258,7 @@ class slayerediting extends Component {
                                             }
 
                                         );
-
+                                        this.setState({ requiresloading: true });
                                         resolve();
                                     }, 1000)
                                 }),

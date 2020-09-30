@@ -27,7 +27,6 @@ def index(request):
 def data_list_posting(request):
     if request.method == 'POST':
         edit = request.data[1]
-        print(edit)
         if edit['edit'] == 1:
             listfirst = request.data[0]
             newdata = data(SPT=listfirst['SPT'], Nvalue=listfirst['Nvalue'], samplingDepth=listfirst['samplingDepth'],

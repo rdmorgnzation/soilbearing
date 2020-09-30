@@ -96,7 +96,8 @@ class slayerediting extends Component {
             {
                 title: 'id',
                 field: 'id',
-                editable: 'never'
+                editable: 'never',
+                hidden: 'true'
             },
             {
                 title: 'SPT',
@@ -241,6 +242,7 @@ class slayerediting extends Component {
                             filtering: true,
                             exportButton: true
                         }}
+                        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow.tableData.id))}
                         editable={{
                             onRowAdd: newData =>
                                 new Promise((resolve, reject) => {

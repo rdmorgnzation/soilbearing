@@ -1,0 +1,6 @@
+For main library,
+pip install -r blcalc/requirements.txt
+
+For web using django.
+pip install -r web/requirements.txt
+install node dependencies for react.

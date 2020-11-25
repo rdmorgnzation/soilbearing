@@ -19,7 +19,7 @@ def index(request):
         fs = FileSystemStorage(location="../media/Excelfiles/")
         fs.save(uploaded_file.name, uploaded_file)
 
-    return render(request, 'frontend/index.html')
+    return render(request, 'index.html')
 
 
 @api_view(('POST',))

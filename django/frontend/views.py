@@ -1,27 +1,50 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
-from rest_framework.parsers import JSONParser
-from .models import data
-from .serializers import dataSerializer
-from rest_framework.response import Response
-from rest_framework import status
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
-import json
-import io
+#from rest_framework.parsers import JSONParser
+#from .models import data
+#from .serializers import dataSerializer
+#from rest_framework.response import Response
+#from rest_framework import status
+#from django.views.decorators.csrf import csrf_exempt
+#from rest_framework.decorators import api_view
+#import json
+#import io
 # Create your views here.
+from . import resources
+import tempfile
+from blcalc.excel_load import BoreholeDataSheets
+from blcalc.borehole_parser import BoreholeLog
 
-
+#Main page
 def index(request):
-    if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        fs = FileSystemStorage(location="../media/Excelfiles/")
-        fs.save(uploaded_file.name, uploaded_file)
-
     return render(request, 'index.html')
 
+#Return parsed excel file to json
+def file_upload(request):
+    loaded_sheets = {}
+    if request.method == 'POST':
+        uploaded_file = request.FILES['document']
+        f = tempfile.TemporaryDirectory()
+        fs = FileSystemStorage(location=f.name)
+        fs.save(uploaded_file.name, uploaded_file)
+        if uploaded_file.name.endswith('xls') or uploaded_file.name.endswith('xlsx'):
+            sheets = BoreholeDataSheets.load_file(f.name + '/' + uploaded_file.name)
+            #Load all the sheets
+            for sheet_key in sheets.keys():
+                sheet = sheets[sheet_key]
+                borehole_log = BoreholeLog(sheet)
+                if borehole_log.values:
+                    #Save only if values exists
+                    loaded_sheets[sheet_key] = {
+                            'attributes': borehole_log.attributes,
+                            'values': borehole_log.values
+                        }
+            f.cleanup()
+    return JsonResponse(loaded_sheets, safe=False)
 
+#This is not handled by server
+"""
 @api_view(('POST',))
 @csrf_exempt
 def data_list_posting(request):
@@ -70,3 +93,5 @@ def data_list_query(request):
         values = data.objects.all()
         serializer = dataSerializer(values, many=True)
         return JsonResponse(serializer.data, safe=False)
+        
+"""        

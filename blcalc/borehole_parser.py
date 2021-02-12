@@ -539,6 +539,7 @@ class BoreholeLog(Base):
         self._header_pos = self._get_header_rows()
         if self._header_pos is None:
             self.values = None
+            self.attributes = None
             return
         self.attributes = self._get_attributes()
         self._row_list_expand()

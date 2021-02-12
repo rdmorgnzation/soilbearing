@@ -20,4 +20,4 @@ build/
 tests/report/
 .idea
 django/db.sqlite3
-static/main.js
+django/frontend/static/main.js

@@ -3,7 +3,7 @@ Diffrent properties of soil
 """
 from enum import Enum
 
-class SoilProperty(Enum):
+class SoilProperty(str, Enum):
     """
     Diffrent soil properties
     """

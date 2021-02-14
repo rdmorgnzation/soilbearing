@@ -1,3 +1,36 @@
+//Display data related to footing
+//Include location too
+import React from 'react';
+
+class finfo extends React.Component {
+    render(){
+        return(
+            <div>
+                Location: {this.props.sheet.attributes.location}<br/>
+                Footing Type: Circular, Square, Strip<br/>
+                Depth: <br/>
+                Width: <br/>
+                Length: <br/>
+            </div>
+        );
+    };
+};
+
+
+import { connect } from "react-redux";
+const mapStateToProps = state => {
+  return {
+    sheet: state.state.sheet
+  };
+};
+
+import actionCreater from '../redux/actionCreators.jsx';
+const mapDispatchToProps = dispatch => ({
+  //setDepth: (d) => dispatch(actionCreater.setState('depth',d))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(finfo);
+
+/*
 import React, { Component, useRef, useEffect } from "react";
 
 class finfo extends Component {
@@ -43,5 +76,4 @@ class finfo extends Component {
         );
     }
 }
-
-export default finfo;
+*/

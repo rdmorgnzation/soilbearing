@@ -19,8 +19,8 @@ class App extends Component {
                             <div className="navbar-nav">
                                 <NavLink className="nav-item nav-link " to="/efileupload">Excel File Upload </NavLink>
                                 <NavLink className="nav-item nav-link" to="/finfo">Footing Info</NavLink>
-                                <NavLink className="nav-item nav-link" to="/mpage">Map Page</NavLink>
                                 <NavLink className="nav-item nav-link " to="/slayerediting">Soil Layer Editing</NavLink>
+                                <NavLink className="nav-item nav-link" to="/mpage">Map Page</NavLink>
                             </div>
 
                         </div>
@@ -28,8 +28,8 @@ class App extends Component {
                     <br /><br /> <br />
                     <Route path="/efileupload" component={efileupload} />
                     <Route path="/finfo" component={finfo} />
+                    <Route path="/slayerediting" component={slayerediting} />                    
                     <Route path="/mpage" component={mpage} />
-                    <Route path="/slayerediting" component={slayerediting} />
                 </div>
             </HashRouter >
         )

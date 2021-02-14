@@ -1,4 +1,4 @@
-import React, { Component, PropType } from "react";
+import React from "react";
 import cookie from "react-cookies";
 
 //For upload form
@@ -39,12 +39,16 @@ class FileUploadForm extends React.Component {
 //Display attributes, later may be change attributes too
 function SheetOption(props){
     return(
-        <div>
+        <div style={{border: "2px solid", margin: 1}}>
             {props.sheetName}
             {props.sheetName==props.currentSheet?
             `[Selected]`:
-            [<button onClick={()=>props.setSheet(props.sheetName)}>Select</button>]
+            <button key={props.sheetName} onClick={()=>props.setSheet(props.sheetName)}>Select</button>
             }
+            <br/>
+            {Object.keys(props.attributes).map(attr=>
+                <span key={attr}>{attr}: {props.attributes[attr]}<br/></span>
+            )}
         </div>
     );
 };
@@ -54,16 +58,24 @@ function SheetOption(props){
 class SheetSelector extends React.Component {
     constructor(props){
         super(props);
-        const firstKey = Object.keys(props.sheets)[0];
+        if (!!props.savedSheets){
+            this.state = {activeSheet: null};
+            return;//Do noting if there are previously saved sheets
+        }
+        //Check if no uploaded contents search in saved if any
+        var sheets = props.sheets || {};
+        props.saveSheets(sheets);//else save and update
+        const firstKey = Object.keys(sheets)[0];
         this.state = {activeSheet: firstKey};
         if(!!firstKey){
-            this.props.setSheet(props.sheets[firstKey]);
-        }else{//set empty
-            this.props.setSheet({"attributes": {}, "values": {}});
+            props.setSheet(sheets[firstKey]);
         }
     }
     componentDidUpdate(prevProps){
         if (prevProps.sheets !== this.props.sheets) {
+            if (Object.keys(this.props.sheets).length==0)
+                return;
+            this.props.saveSheets(this.props.sheets);
             const firstKey = Object.keys(this.props.sheets)[0];
             this.setState({activeSheet: firstKey});
             if(!!firstKey){
@@ -72,18 +84,25 @@ class SheetSelector extends React.Component {
         }
     }
     selectSheet(sheetName){
+        var sheets = this.props.sheets || {};
+        if (Object.keys(sheets).length==0)
+            sheets = this.props.savedSheets || {};
         this.setState({activeSheet: sheetName});
-        this.props.setSheet(this.props.sheets[sheetName]);
+        this.props.setSheet(sheets[sheetName]);
     }
 
     render(){
+        var sheets = this.props.sheets || {};
+        if (Object.keys(sheets).length==0)
+            sheets = this.props.savedSheets || {};
         return(
             <div>
-                {Object.keys(this.props.sheets).map(name=>
+                {Object.keys(sheets).map(name=>
                     <SheetOption 
                         key={name} sheetName={name}
                         currentSheet={this.state.activeSheet}
                         setSheet={this.selectSheet.bind(this)}
+                        attributes={sheets[name].attributes}
                         />
                 )}
             </div>
@@ -92,12 +111,19 @@ class SheetSelector extends React.Component {
 }
 
 import { connect } from "react-redux";
+const mapStateToProps = state => {
+  return {
+    savedSheets: state.state.sheets
+  };
+};
+
 import actionCreater from '../redux/actionCreators.jsx';
 const mapDispatchToProps = dispatch => ({
-  setSheet: (d) => dispatch(actionCreater.setState('sheet',d))
+  setSheet: (d) => dispatch(actionCreater.setState('sheet',d)),
+  saveSheets: (d) => dispatch(actionCreater.setState('sheets',d))
 })
 
-const SheetSelectorG = connect(null, mapDispatchToProps)(SheetSelector);
+const SheetSelectorG = connect(mapStateToProps, mapDispatchToProps)(SheetSelector);
 
 //Full page
 class efileupload extends React.Component {

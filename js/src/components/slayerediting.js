@@ -1,310 +1,137 @@
-import React, { Component, useState } from "react";
+import React from "react";
 import MaterialTable from "material-table";
 import cookie from "react-cookies";
 
+const options = {
+        search: false,
+        paging: false,
+        filtering: false,
+        exportButton: true
+};
 
-
-class slayerediting extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            error: null,
-            isLoaded: false,
-            items: [],
-            requiresloading: false,
-        };
-
-    }
-
-
-
-
-    // columns = ["id", "SPT", "N Value", "Sampling Depth", "Thickness", "Classification", "Group Symbol", "Layer", "Gamma", "Water Percentage", "cValue", "phi value", "GI", "Elasticity", "nu"];
-    //                  "id",
-    //                   "SPT",
-    //                       "Nvalue",
-    //                              "samplingDepth",
-    //                         "thickness",
-    //                              "classification",
-    //                            "groupSymbol",
-    //                     "layer",
-    //                     "gamma",
-    //                                "waterPercentage",
-    //                      "cValue",
-    //                        "phiValue",
-    //                  "GI",
-    //                          "Elasticity",
-    //                  "nu",
-
-
-
-    componentDidMount() {
-        fetch("/dataq")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        items: result,
-                        requiresloading: false
-                    });
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
-    }
-
-    componentDidUpdate() {
-        if (this.state.requiresloading) {
-            fetch("/dataq")
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if (this.setState.items != result) {
-                            this.setState({
-                                isLoaded: true,
-                                items: result,
-                                requiresloading: false,
-                            });
-                        }
-                    },
-                    // Note: it's important to handle errors here
-                    // instead of a catch() block so that we don't swallow
-                    // exceptions from actual bugs in components.
-                    (error) => {
-                        this.setState({
-                            isLoaded: true,
-                            error
-                        });
-                    }
-                )
-        }
-    }
-
-
-
-
-    render() {
-        const columns = [
+const columns = [
             {
-                title: 'id',
-                field: 'id',
-                editable: 'never',
-                hidden: 'true'
-            },
-            {
-                title: 'SPT',
-                field: 'SPT',
-                initialEditValue: 20
-            },
-            {
-                title: 'N Value',
-                field: 'Nvalue',
-                initialEditValue: 20
-            },
-            {
-                title: 'Sampling Depth',
-                field: 'samplingDepth',
-                initialEditValue: 1.5
-            },
-            {
-                title: 'Thickness',
-                field: 'thickness',
-                initialEditValue: 2
-            },
-            {
-                title: 'Classification',
-                field: 'classification',
-                initialEditValue: 'sand'
-            },
-            {
-                title: 'Group Symbol',
-                field: 'groupSymbol',
-                initialEditValue: 'SW'
-            },
-            {
-                title: 'Layer',
-                field: 'layer',
-                initialEditValue: 'top'
-            },
-            {
-                title: 'Gamma',
-                field: 'gamma',
-                initialEditValue: 1.4
-            },
-            {
-                title: 'Water Percentage',
-                field: 'waterPercentage',
-                initialEditValue: 30
-
-            },
-            {
-                title: 'cValue',
-                field: 'cValue',
-                initialEditValue: 20
-            },
-            {
-                title: 'phiValue',
-                field: 'phiValue',
-                initialEditValue: 30
-            },
-            {
+                title: '<depth',
+                field: 'depth',
+                initialEditValue: '0.',
+                type: 'numeric'
+            },{
                 title: 'GI',
                 field: 'GI',
-                initialEditValue: 'S'
-            },
-            {
-                title: 'Elasticity',
-                field: 'Elasticity',
-                initialEditValue: 200
-            },
-            {
+                initialEditValue: 'SW'
+            },{
+                title: 'SPT_N',
+                field: 'SPT_N',
+                initialEditValue: '10',
+                type: 'numeric'
+            },{
+                title: 'cohesion',
+                field: 'cohesion',
+                type: 'numeric'
+            },{
+                title: 'phi',
+                field: 'phi',
+                type: 'numeric'
+            },{
+                title: 'gamma',
+                field: 'gamma',
+                type: 'numeric'
+            },{
+                title: 'N60',
+                field: 'N60',
+                type: 'numeric'
+            },{
+                title: 'elasticity',
+                field: 'elasticity',
+                type: 'numeric'
+            },{
                 title: 'nu',
                 field: 'nu',
-                initialEditValue: 120
+                type: 'numeric'
+            },{
+                title: 'surcharge',
+                field: 'surcharge',
+                type: 'numeric'
+            },{
+                title: 'packing_case',
+                field: 'packing_case',
+                type: 'numeric'
             }
-        ]
+];
 
+class slayerediting extends React.Component {
+    constructor(props){
+        super(props);
+        //Check sheet if already created?
+        if(!props.sheet)
+            props.setSheet({attributes:{}, values: []});
+    };
 
-        const { error, isLoaded, items } = this.state;
-        if (error) {
-            return <div>Error: {error.message}</div>;
-        } else if (!isLoaded) {
-            return <div>Loading...</div>;
-        } else {
-
-            return (
-                <div>
-                    <input
-                        type="hidden"
-                        value={cookie.load("csrftoken")}
-                        name="csrfmiddlewaretoken"
-                    />
-                    {/* <table className="table table-bordered table-hover table-responsive">
-                        <thead className="thead-dark">
-                            <tr>
-                                <th scope='col'> id </th>
-                                <th scope='col'> SPT </th>
-                                <th scope='col'> N Value </th>
-                                <th scope='col'> Sampling Depth </th>
-                                <th scope='col'> Thickness </th>
-                                <th scope='col'> Classification </th>
-                                <th scope='col'>Group Symbol </th>
-                                <th scope='col'>Layer </th>
-                                <th scope='col'>Gamma </th>
-                                <th scope='col'>Water Percentage </th>
-                                <th scope='col'>cValue </th>
-                                <th scope='col'>phiValue </th>
-                                <th scope='col'>GI </th>
-                                <th scope='col'>Elasticity </th>
-                                <th scope='col'>nu </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                items.map(item => (
-                                    <tr>
-                                        <th className="table-primary" scope='row'>{item.id}</th>
-                                        <td className="table-light">{item.SPT}</td>
-                                        <td className="table-light">{item.Nvalue}</td>
-                                        <td className="table-light">{item.samplingDepth}</td>
-                                        <td className="table-light">{item.thickness}</td>
-                                        <td className="table-light">{item.classification}</td>
-                                        <td className="table-light">{item.groupSymbol}</td>
-                                        <td className="table-light">{item.layer}</td>
-                                        <td className="table-light">{item.gamma}</td>
-                                        <td className="table-light">{item.waterPercentage}</td>
-                                        <td className="table-light">{item.cValue}</td>
-                                        <td className="table-light">{item.phiValue}</td>
-                                        <td className="table-light">{item.GI}</td>
-                                        <td className="table-light">{item.Elasticity}</td>
-                                        <td className="table-light">{item.nu}</td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-
-                        </table> */}
-
-                    <MaterialTable title="Data"
-                        data={this.state.items}
-                        columns={columns}
-                        options={{
-                            search: true,
-                            paging: false,
-                            filtering: true,
-                            exportButton: true
-                        }}
-                        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow.tableData.id))}
-                        editable={{
-                            onRowAdd: newData =>
+    render(){
+        var data = [];
+        if(this.props.sheet)
+            data=this.props.sheet.values;
+        return(
+            <div>
+                <MaterialTable
+                    title="SPT Table"
+                    columns={columns}
+                    data={data}
+                    options={options}
+                    editable={{
+                            onRowAdd: newData => 
                                 new Promise((resolve, reject) => {
-                                    setTimeout(() => {
-                                        const edit = { edit: 1 }  //edit=1=addrow
-                                        newData = [newData, edit]
-                                        // console.log(newData)
-                                        fetch("/datap/",
-                                            {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify(newData),
-                                            }
-                                        );
-                                        this.setState({ requiresloading: true });
+                                    setImmediate(()=>{
+                                        this.props.setSheet({
+                                            ...this.props.sheet,
+                                            values: [...this.props.sheet.values, newData]
+                                        });
                                         resolve();
-                                    }, 1000)
+                                    });
                                 }),
                             onRowUpdate: (newData, oldData) =>
                                 new Promise((resolve, reject) => {
-                                    setTimeout(() => {
-                                        const edit = { edit: 2 } //edit=2=rowupdate
-                                        newData = [newData, edit]
-                                        fetch("/datap/",
-                                            {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify(newData)
-                                            }
-                                        );
-                                        this.setState({ requiresloading: true });
+                                    setImmediate(()=>{
+                                        const dataUpdate = [...this.props.sheet.values];
+                                        const index = oldData.tableData.id;
+                                        dataUpdate[index] = newData;
+                                        this.props.setSheet({
+                                            ...this.props.sheet,
+                                            values: dataUpdate
+                                        });
                                         resolve();
-                                    }, 1000)
+                                    });
                                 }),
                             onRowDelete: oldData =>
                                 new Promise((resolve, reject) => {
-                                    setTimeout(() => {
-                                        const edit = { edit: 3 } //edit=3=rowdelete
-                                        oldData = [oldData, edit]
-                                        fetch("/datap/",
-                                            {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify(oldData)
-                                            });
-                                        this.setState({ requiresloading: true });
-                                        resolve()
-                                    }, 1000)
-                                }),
-                        }} >
-
-                    </MaterialTable>
-                </div>
-            );
-        }
+                                    setImmediate(() => {
+                                        const dataDelete = [...this.props.sheet.values];
+                                        const index = oldData.tableData.id;
+                                        dataDelete.splice(index, 1);
+                                        this.props.setSheet({
+                                            ...this.props.sheet,
+                                            values: dataDelete
+                                        });
+                                        resolve();
+                                })
+                            }),
+                    }}
+                    />
+            </div>
+        )
     }
 }
 
-export default slayerediting;
+import { connect } from "react-redux";
+const mapStateToProps = state => {
+  return {
+    sheet: state.state.sheet,
+  };
+};
+
+import actionCreater from '../redux/actionCreators.jsx';
+const mapDispatchToProps = dispatch => ({
+  setSheet: (d) => dispatch(actionCreater.setState('sheet',d)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(slayerediting);

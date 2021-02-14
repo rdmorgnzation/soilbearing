@@ -15,9 +15,8 @@ class finfo extends React.Component {
     constructor(props){
         super(props);
         //Check sheet if already created?
-        if(!props.sheet){
-            props.setSheet({attributes: {location: ''}});
-        }
+        if(!props.sheet)
+            props.setSheet({attributes: {location: ''},values:[]});
         if(props.foundation)
             return;
         //if foundation is not previously created create it

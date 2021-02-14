@@ -1,6 +1,7 @@
 from django.db import models
+#need to change all models
 
-
+"""
 class excelUpload(models.Model):
     excelFile = models.FileField(upload_to='excelFile/files/')
 
@@ -22,3 +23,4 @@ class data(models.Model):
     GI = models.CharField(max_length=3, null=False)
     Elasticity = models.FloatField(null=True)
     nu = models.FloatField(null=True)
+"""

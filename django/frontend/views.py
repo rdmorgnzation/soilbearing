@@ -3,19 +3,20 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from rest_framework.decorators import api_view
 
+#import json
 #from rest_framework.parsers import JSONParser
 #from .models import data
-#from .serializers import dataSerializer
 #from rest_framework.response import Response
 #from rest_framework import status
 #from django.views.decorators.csrf import csrf_exempt
-#import json
 #import io
 # Create your views here.
 from . import resources
 import tempfile
 from blcalc.excel_load import BoreholeDataSheets
 from blcalc.borehole_parser import BoreholeLog
+from blcalc.soilproperty import SoilProperty
+from blcalc.material import LayerSoil
 
 #Main page
 @api_view()
@@ -44,6 +45,24 @@ def file_upload(request):
                     }
         f.cleanup()
     return JsonResponse(loaded_sheets)
+
+def json_material_to_py(data):
+    res = []
+    for layer in data:
+        lay = {}
+        for prop in layer:
+            if prop=='tableData':
+                break
+            lay[SoilProperty(prop)] = layer[prop]
+        res.append(lay)
+    return res
+
+#Provides preview data
+@api_view(['POST'])
+def get_preview(request):
+    data = json_material_to_py(request.data['values'])
+    soil_layer = LayerSoil(data)
+    return JsonResponse({'values': soil_layer.get()})
 
 #This is not handled by server
 """

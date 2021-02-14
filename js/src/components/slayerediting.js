@@ -2,11 +2,11 @@ import React from "react";
 import MaterialTable from "material-table";
 import cookie from "react-cookies";
 
-const options = {
+const table_options = {
         search: false,
         paging: false,
         filtering: false,
-        exportButton: true
+        exportButton: false
 };
 
 const columns = [
@@ -65,19 +65,70 @@ class slayerediting extends React.Component {
         //Check sheet if already created?
         if(!props.sheet)
             props.setSheet({attributes:{}, values: []});
+       this.state = {data: {}, preview: false};
     };
 
     render(){
         var data = [];
         if(this.props.sheet)
             data=this.props.sheet.values;
+        if(this.state.preview){
+            return(
+                <div>
+                    <MaterialTable
+                    title="SPT Table"
+                    columns={columns}
+                    data={this.state.data}
+                    options={{
+                        ...table_options, exportButton: true
+                    }}//show export in preview only
+                    actions={[
+                        {
+                            icon: 'edit',
+                            tooltip: 'Edit',
+                            isFreeAction: true,
+                            onClick: () => {
+                                this.setState({preview: false});
+                            }
+                        }
+                    ]} 
+                    />
+                </div>
+            )
+        }
         return(
             <div>
                 <MaterialTable
                     title="SPT Table"
                     columns={columns}
                     data={data}
-                    options={options}
+                    options={table_options}
+                    actions={[
+                        {
+                            icon: 'preview',
+                            tooltip: 'Preview',
+                            isFreeAction: true,
+                            onClick: () => {
+                                    const request = new Request(
+                                        "./get_preview",
+                                        {headers: {
+                                            'X-CSRFToken': cookie.load("csrftoken"),
+                                            "Content-Type": "application/json"
+                                            }}
+                                    );
+                                    fetch(request, {
+                                        method: 'post',
+                                        mode: 'same-origin',
+                                        body: JSON.stringify({values: data})
+                                    })
+                                    .then((response)=>{
+                                        response.json().then((data)=> {
+                                            this.setState({data: data.values, preview: true});
+                                        });
+                                    });
+                            }
+                        }
+                    ]} 
                     editable={{
                             onRowAdd: newData => 
                                 new Promise((resolve, reject) => {

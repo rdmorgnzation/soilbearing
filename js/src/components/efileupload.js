@@ -58,7 +58,7 @@ function SheetOption(props){
 class SheetSelector extends React.Component {
     constructor(props){
         super(props);
-        if (!!props.savedSheets){
+        if (props.savedSheets){
             this.state = {activeSheet: null};
             return;//Do noting if there are previously saved sheets
         }
@@ -67,7 +67,7 @@ class SheetSelector extends React.Component {
         props.saveSheets(sheets);//else save and update
         const firstKey = Object.keys(sheets)[0];
         this.state = {activeSheet: firstKey};
-        if(!!firstKey){
+        if(firstKey){
             props.setSheet(sheets[firstKey]);
         }
     }
@@ -78,7 +78,7 @@ class SheetSelector extends React.Component {
             this.props.saveSheets(this.props.sheets);
             const firstKey = Object.keys(this.props.sheets)[0];
             this.setState({activeSheet: firstKey});
-            if(!!firstKey){
+            if(firstKey){
                 this.props.setSheet(this.props.sheets[firstKey]);
             }
         }

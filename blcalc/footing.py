@@ -13,6 +13,7 @@ class FootingType(Enum):
     Circular = 'Circular'
     Square = 'Square'
     Strip = 'Strip'
+    Rectangular = 'Rectangular'
 
 class FootingData(Enum):
     """

@@ -1,16 +1,69 @@
 //Display data related to footing
 //Include location too
+//Location is in sheet attributes,
+//other values in footing
 import React from 'react';
 
+const foundation_default = {
+            Type: "Square",
+            Depth: 1.5,
+            Width: 2,
+            Length: 2
+        };
+
 class finfo extends React.Component {
+    constructor(props){
+        super(props);
+        //Check sheet if already created?
+        if(!props.sheet){
+            props.setSheet({attributes: {location: ''}});
+        }
+        if(props.foundation)
+            return;
+        //if foundation is not previously created create it
+        props.setFoundation(foundation_default)
+    };
+    
+    handleChange(evt){
+        if(evt.target.name=='location'){
+            this.props.setSheet({
+                ...this.props.sheet,
+                attributes: {
+                    ...this.props.sheet.attributes,
+                    location: evt.target.value
+                }
+            })
+        }else{
+            this.props.setFoundation({
+                ...this.props.foundation,
+                [evt.target.name]: evt.target.value
+            })
+        }
+    };
+
     render(){
+        var loc = '',
+            foundation=foundation_default;
+        if (this.props.sheet)
+            loc=this.props.sheet.attributes.location;
+        if (this.props.foundation)
+            foundation=this.props.foundation
         return(
             <div>
-                Location: {this.props.sheet.attributes.location}<br/>
-                Footing Type: Circular, Square, Strip<br/>
-                Depth: <br/>
-                Width: <br/>
-                Length: <br/>
+                Location: <input name="location" value={loc} onChange={this.handleChange.bind(this)}/><br/>
+                Footing Type: 
+                <select name="Type" value={foundation.Type} onChange={this.handleChange.bind(this)}>
+                    <option value="Circular">Circular</option>
+                    <option value="Square">Square</option>
+                    <option value="Strip">Strip</option>
+                    <option value="Rectangular">Rectangular</option>
+                </select><br/>
+                Depth: <input name="Depth" type="number" value={foundation.Depth} onChange={this.handleChange.bind(this)}/><br/>
+                Width: <input name="Width" type="number" value={foundation.Width} onChange={this.handleChange.bind(this)}/><br/>
+                {foundation.Type=="Rectangular" && 
+                <span> Length: <input name="Length" type="number" value={foundation.Length} onChange={this.handleChange.bind(this)}/> </span>
+                }
+                <br/>
             </div>
         );
     };
@@ -20,13 +73,15 @@ class finfo extends React.Component {
 import { connect } from "react-redux";
 const mapStateToProps = state => {
   return {
-    sheet: state.state.sheet
+    sheet: state.state.sheet,
+    foundation: state.state.foundation
   };
 };
 
 import actionCreater from '../redux/actionCreators.jsx';
 const mapDispatchToProps = dispatch => ({
-  //setDepth: (d) => dispatch(actionCreater.setState('depth',d))
+  setSheet: (d) => dispatch(actionCreater.setState('sheet',d)),
+  setFoundation: (d) => dispatch(actionCreater.setState('foundation',d))
 })
 export default connect(mapStateToProps, mapDispatchToProps)(finfo);
 

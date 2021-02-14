@@ -81,7 +81,8 @@ class slayerediting extends React.Component {
                     editable={{
                             onRowAdd: newData => 
                                 new Promise((resolve, reject) => {
-                                    setImmediate(()=>{
+                                    setImmediate(()=>{//@TODO: check using timeout as in eg if
+                                        // there will be any difference
                                         this.props.setSheet({
                                             ...this.props.sheet,
                                             values: [...this.props.sheet.values, newData]

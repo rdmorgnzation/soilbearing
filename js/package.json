@@ -16,16 +16,12 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
-    "wepack-cli": "0.0.1-security"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "eslint-plugin-react-hooks": "^4.1.2",
-    "faker": "^5.1.0",
-    "formik": "^2.1.5",
-    "lodash": "^4.17.20",
     "material-table": "^1.69.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -34,22 +30,16 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.3",
-    "react-table": "^7.5.1",
-    "recompose": "^0.30.0",
     "redux": "^4.0.5",
-    "redux-devtools-extension": "^2.13.8",
-    "redux-form": "^8.3.6",
-    "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-devtools-extension": "^2.13.8"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samniraula/geoproject.git"
+    "url": "git+https://github.com/rdmorgnzation/soilbearing.git"
   },
   "bugs": {
-    "url": "https://github.com/samniraula/geoproject/issues"
+    "url": "https://github.com/rdmorgnzation/soilbearing/issues"
   },
-  "homepage": "https://github.com/samniraula/geoproject#readme",
+  "homepage": "https://github.com/rdmorgnzation/soilbearing#readme",
   "description": ""
 }

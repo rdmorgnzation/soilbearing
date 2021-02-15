@@ -1,9 +1,12 @@
 from django.urls import path
-from . import views
+from .views import borehole_calculation
+from .views import index_page
+from .views import district_shapefile
 
 urlpatterns = [
-    path("", views.index),
-    path("file_upload", views.file_upload),
-    path("get_preview", views.get_preview),
-    path("get_result", views.get_result),
+    path("", index_page.index),
+    path("file_upload", borehole_calculation.file_upload),
+    path("get_preview", borehole_calculation.get_preview),
+    path("get_result", borehole_calculation.get_result),
+    path("get_district_polygon", district_shapefile.get_district_polygon),
 ]

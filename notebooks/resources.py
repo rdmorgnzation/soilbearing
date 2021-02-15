@@ -17,5 +17,5 @@ def test_data_dir():
     Returns path of test datas like excel
     Used for test or notebook
     """
-    path = Path(__file__).parent.parent / 'testdata'
+    path = Path(__file__).parent.parent / 'media/testdata'
     return path

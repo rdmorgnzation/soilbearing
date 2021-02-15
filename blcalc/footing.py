@@ -6,7 +6,7 @@ from enum import Enum
 
 from .base import Base
 
-class FootingType(Enum):
+class FootingType(str, Enum):
     """
     Supported footing types
     """
@@ -15,7 +15,7 @@ class FootingType(Enum):
     Strip = 'Strip'
     Rectangular = 'Rectangular'
 
-class FootingData(Enum):
+class FootingData(str, Enum):
     """
     Diffrent datas to be stored for footing info
     """

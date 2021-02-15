@@ -15,7 +15,7 @@ from .methods.IS import IS
 from .methods.teng import Teng
 from .soilproperty import SoilProperty
 
-class Methods(Enum):
+class Methods(str, Enum):
     """
     Supported solution methods
     """

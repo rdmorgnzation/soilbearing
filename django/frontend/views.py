@@ -17,6 +17,9 @@ from blcalc.excel_load import BoreholeDataSheets
 from blcalc.borehole_parser import BoreholeLog
 from blcalc.soilproperty import SoilProperty
 from blcalc.material import LayerSoil
+from blcalc.footing import Footing, FootingType, FootingData
+from blcalc.assembly import Assembly
+from blcalc.solver import Solver
 
 #Main page
 @api_view()
@@ -64,55 +67,18 @@ def get_preview(request):
     soil_layer = LayerSoil(data)
     return JsonResponse({'values': soil_layer.get()})
 
-#This is not handled by server
-"""
-@api_view(('POST',))
-@csrf_exempt
-def data_list_posting(request):
-    if request.method == 'POST':
-        edit = request.data[1]
-        if edit['edit'] == 1:
-            listfirst = request.data[0]
-            newdata = data(SPT=listfirst['SPT'], Nvalue=listfirst['Nvalue'], samplingDepth=listfirst['samplingDepth'],
-                           thickness=listfirst['thickness'], classification=listfirst['classification'],
-                           groupSymbol=listfirst['groupSymbol'], layer=listfirst['layer'], gamma=listfirst['gamma'],
-                           waterPercentage=listfirst['waterPercentage'], cValue=listfirst['cValue'],
-                           phiValue=listfirst['phiValue'], GI=listfirst['GI'], Elasticity=listfirst['Elasticity'],
-                           nu=listfirst['nu']
-                           )
-            newdata.save()
-        elif edit['edit'] == 2:
-            listfirst = request.data[0]
-            pk = listfirst['id']
-            newdata = data(SPT=listfirst['SPT'], Nvalue=listfirst['Nvalue'], samplingDepth=listfirst['samplingDepth'],
-                           thickness=listfirst['thickness'], classification=listfirst['classification'],
-                           groupSymbol=listfirst['groupSymbol'], layer=listfirst['layer'], gamma=listfirst['gamma'],
-                           waterPercentage=listfirst['waterPercentage'], cValue=listfirst['cValue'],
-                           phiValue=listfirst['phiValue'], GI=listfirst['GI'], Elasticity=listfirst['Elasticity'],
-                           nu=listfirst['nu']
-                           )
-            editdata = data.objects.get(pk=pk)
-            print(editdata)
-            editdata = newdata
-            editdata.pk = pk
-            editdata.save()
+#Provides result
+@api_view(['POST'])
+def get_result(request):
+    data = json_material_to_py(request.data['sheet']['values'])
+    soil_layer = LayerSoil(data)
+    footing = Footing()
+    #Change to enum
+    request.data['footing']['Type'] = FootingType(request.data['footing']['Type'])
+    for prop in request.data['footing']:
+        footing[FootingData(prop)] = request.data['footing'][prop]
+    assembly = Assembly(footing, soil_layer)
+    solver = Solver(assembly)
+    result = solver.run()
+    return JsonResponse({'results': result})
 
-        elif edit['edit'] == 3:
-            listfirst = request.data[0]
-            pk = listfirst['id']
-            data.objects.get(pk=pk).delete()
-            # deletedata = data.objects.get(pk=2)
-            # deletedata.delete()
-            # olddata = data.objects.get(pk=3)
-
-        return Response(status=status.HTTP_201_CREATED)
-
-
-@ api_view(('GET',))
-def data_list_query(request):
-    if request.method == 'GET':
-        values = data.objects.all()
-        serializer = dataSerializer(values, many=True)
-        return JsonResponse(serializer.data, safe=False)
-        
-"""        

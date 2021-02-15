@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development --watch ./src/index.js --output ../django/frontend/static/main.js",
-    "build": "webpack --mode development ./src/index.js --output ../django/frontend/static/main.js"
+    "build": "webpack --mode development ./src/index.js --output ../django/frontend/static/main.js",
+    "pretest": "eslint . ",
+    "fix": "eslint --fix"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +17,8 @@
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "eslint": "^7.20.0",
+    "eslint-config-strongloop": "^2.1.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },

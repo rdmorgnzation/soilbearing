@@ -6,6 +6,7 @@ class mpage extends React.Component {
         return (
             <div>
                 <MapView/>
+                <br/>*
             </div>
         );
     }

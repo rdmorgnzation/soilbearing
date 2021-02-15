@@ -5,6 +5,8 @@ import finfo from './finfo'
 import mpage from './mpage'
 import slayerediting from './slayerediting'
 import results from './results'
+import attributes from './attributes'
+import main_page from "./main_page"
 
 class App extends Component {
     render() {
@@ -23,6 +25,7 @@ class App extends Component {
                                 <NavLink className="nav-item nav-link " to="/slayerediting">Soil Layer Editing</NavLink>
                                 <NavLink className="nav-item nav-link " to="/results">Results</NavLink>
                                 <NavLink className="nav-item nav-link" to="/mpage">Map Page</NavLink>
+                                <NavLink className="nav-item nav-link" to="/attributes">Attributes</NavLink>
                             </div>
 
                         </div>
@@ -33,6 +36,7 @@ class App extends Component {
                     <Route path="/slayerediting" component={slayerediting} />
                     <Route path="/results" component={results} />
                     <Route path="/mpage" component={mpage} />
+                    <Route path="/attributes" component={attributes} />
                 </div>
             </HashRouter >
         )

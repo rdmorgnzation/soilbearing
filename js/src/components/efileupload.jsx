@@ -6,6 +6,12 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { IconButton } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import clsx from 'clsx'
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
   dropzone: {
@@ -121,17 +127,24 @@ const FileUploadForm = withStyles(styles)(FileUploadFormX);
 //Display attributes, later may be change attributes too
 function SheetOption(props){
   return(
-    <div style={{border: "2px solid", margin: 1}}>
-      {props.sheetName}
-      {props.sheetName==props.currentSheet?
-      `[Selected]`:
-        <button key={props.sheetName} onClick={()=>props.setSheet(props.sheetName)}>Select</button>
+    <Card style={{width: 250, height: 300}}>
+      <CardContent>
+        <Typography variant="h5" component="h2">
+            {props.sheetName}
+        </Typography>
+        <Typography variant="body2" component="p">
+          {Object.keys(props.attributes).map(attr=>
+            <span key={attr}>{attr}: {props.attributes[attr]}<br/></span>
+          )}
+        </Typography>
+      </CardContent>
+      {props.sheetName!=props.currentSheet &&
+        <CardActions>
+          <Button key={props.sheetName} onClick={()=>props.setSheet(props.sheetName)}>Select</Button>
+        </CardActions>
       }
       <br/>
-      {Object.keys(props.attributes).map(attr=>
-        <span key={attr}>{attr}: {props.attributes[attr]}<br/></span>
-      )}
-    </div>
+    </Card>
   );
 };
 
@@ -178,16 +191,18 @@ class SheetSelector extends React.Component {
     if (Object.keys(sheets).length==0)
       sheets = this.props.savedSheets || {};
     return(
-      <div>
+      <>
         {Object.keys(sheets).map(name=>
-          <SheetOption 
-            key={name} sheetName={name}
-            currentSheet={this.state.activeSheet}
-            setSheet={this.selectSheet.bind(this)}
-            attributes={sheets[name].attributes}
-          />
+          <Grid item key={name}>
+            <SheetOption 
+              sheetName={name}
+              currentSheet={this.state.activeSheet}
+              setSheet={this.selectSheet.bind(this)}
+              attributes={sheets[name].attributes}
+            />
+          </Grid>
         )}
-      </div>
+      </>
     )
   };
 }
@@ -218,10 +233,12 @@ class efileupload extends React.Component {
 
   render(){
     return (
-      <div>
-      <FileUploadForm onFileUpload={this.handleOnFileUpload.bind(this)}/>
-      <SheetSelectorG sheets={this.state.sheets}/>
-      </div>
+      <Grid container spacing={2} style={{padding:16,alignItems: 'center'}}>
+        <Grid item>
+          <FileUploadForm onFileUpload={this.handleOnFileUpload.bind(this)}/>
+        </Grid>
+        <SheetSelectorG sheets={this.state.sheets}/>
+      </Grid>
     );
   }
 }

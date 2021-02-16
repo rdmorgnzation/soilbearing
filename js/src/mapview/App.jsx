@@ -1,8 +1,8 @@
 import React from "react";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
-import InputOverlay from './InputOverlay.jsx';
-import Canvas from './Canvas.jsx';
+import InputOverlay from './InputOverlay';
+import Canvas from './Canvas';
 
 export class App extends React.Component {
   componentDidMount(){

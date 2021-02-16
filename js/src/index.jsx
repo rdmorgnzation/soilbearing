@@ -5,7 +5,7 @@ import configureStore from "./redux/configureStore";
 import config from './config.json';
 import actionCreater from './redux/actionCreators';
 
-import App from './components/App.jsx';
+import App from './components/App';
 const Root = props => {
   const store = configureStore();
   store.dispatch(actionCreater.setConfig(config));

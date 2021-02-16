@@ -6,15 +6,15 @@ import { List, ListItem, ListItemText } from "@material-ui/core";
 //icons
 import { Home } from "@material-ui/icons";
 // our components
-import efileupload from './efileupload.jsx';
-import finfo from './finfo.jsx';
-import mpage from './mpage.jsx';
-import slayerediting from './slayerediting.jsx';
-import results from './results.jsx';
-import attributes from './attributes.jsx';
-import main_page from "./main_page.jsx";
+import efileupload from './efileupload';
+import finfo from './finfo';
+import mpage from './mpage';
+import slayerediting from './slayerediting';
+import results from './results';
+import attributes from './attributes';
+import main_page from "./main_page";
 
-import CustomSnackbar from "./CustomSnackbar.jsx";
+import CustomSnackbar from "./CustomSnackbar";
 
 const useStyles = makeStyles({
   navDisplayFlex: {

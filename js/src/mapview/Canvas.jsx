@@ -151,7 +151,7 @@ const mapStateToProps = state => {
   };
 };
 
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setGetBC: (d) => dispatch(actionCreater.setState('getBC',d)),
   setClipboard: (d) => dispatch(actionCreater.setState('clipboard',d)),

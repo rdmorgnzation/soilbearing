@@ -121,11 +121,8 @@ class slayerediting extends React.Component {
                                         mode: 'same-origin',
                                         body: JSON.stringify({values: data})
                                     })
-                                    .then((response)=>{
-                                        response.json().then((data)=> {
-                                            this.setState({data: data.values, preview: true});
-                                        });
-                                    });
+                                    .then(response => response.json())
+                                    .then(data => this.setState({data: data.values, preview: true}));
                             }
                         }
                     ]} 
@@ -181,7 +178,7 @@ const mapStateToProps = state => {
   };
 };
 
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setSheet: (d) => dispatch(actionCreater.setState('sheet',d)),
 })

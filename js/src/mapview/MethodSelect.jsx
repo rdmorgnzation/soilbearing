@@ -40,7 +40,7 @@ const mapStateToProps = state => {
   };
 };
 
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setMethod: (d) => dispatch(actionCreater.setState('method',d))
 })

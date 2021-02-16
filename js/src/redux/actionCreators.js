@@ -1,4 +1,4 @@
-import * as types from './type.jsx';
+import * as types from './type';
 
 export const setState = (field, value) => ({
   type: types.SET_STATE,

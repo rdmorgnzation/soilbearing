@@ -77,7 +77,7 @@ const mapStateToProps = state => {
   };
 };
 
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setSheet: (d) => dispatch(actionCreater.setState('sheet',d)),
   setFoundation: (d) => dispatch(actionCreater.setState('foundation',d))

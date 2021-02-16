@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import * as currentState from "./currentState.jsx";
-import * as currentConfig from "./currentConfig.jsx";
+import * as currentState from "./currentState";
+import * as currentConfig from "./currentConfig";
 
 export const rootReducer = combineReducers({
   state: currentState.reducer,

@@ -1,18 +1,28 @@
-{% load static %}
-<!DOCTYPE html>
+<!DOCTYPE html>{% load static %}
 <html lang="en">
   <head>
+    <!-- Some meta info -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- meta as per Material-UI-->
+    <meta
+      name="viewport"
+      content="minimum-scale=1, initial-scale=1, width=device-width"
+    />
+    <!-- title -->
     <title>GeoProject</title>
-    <link rel="stylesheet" href="{% static 'bootstrap.css' %}" />
-    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <!-- Material-UI includes -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <!-- for leaflet, due to cross origin check, served from same server -->
     <link rel="stylesheet" href="{% static 'leaflet.css' %}"/>
     <script src="{% static 'leaflet.js' %}"></script>
+    <!-- logo -->
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+        <!-- here all contents are rendered from react -->
+    </div>
+    <!-- bundle from webpack-->
     <script src="{% static 'main.js' %}"></script>
   </body>
 </html>

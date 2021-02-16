@@ -1,6 +1,6 @@
 import React from "react";
 import cookie from "react-cookies";
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 import { connect } from "react-redux";
 
 // Show results from calculation

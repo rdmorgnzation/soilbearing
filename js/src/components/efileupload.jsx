@@ -12,11 +12,8 @@ class FileUploadForm extends React.Component {
             method: 'post',
             body: formData
         })
-        .then((response)=>{
-            response.json().then((data)=> {
-                this.props.onFileUpload(data);
-            });
-        });
+        .then(res => res.json())
+        .then(res => this.props.onFileUpload(data));
     }
     render() {
         return (
@@ -117,7 +114,7 @@ const mapStateToProps = state => {
   };
 };
 
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setSheet: (d) => dispatch(actionCreater.setState('sheet',d)),
   saveSheets: (d) => dispatch(actionCreater.setState('sheets',d))

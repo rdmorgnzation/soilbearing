@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import configureStore from "./redux/configureStore.jsx";
+import configureStore from "./redux/configureStore";
 import config from './config.json';
-import actionCreater from './redux/actionCreators.jsx';
+import actionCreater from './redux/actionCreators';
 
-import App from './components/App';
+import App from './components/App.jsx';
 const Root = props => {
   const store = configureStore();
   store.dispatch(actionCreater.setConfig(config));

@@ -67,7 +67,7 @@ const mapStateToProps = state => {
   };
 };
 
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setDepth: (d) => dispatch(actionCreater.setState('depth',d))
 })

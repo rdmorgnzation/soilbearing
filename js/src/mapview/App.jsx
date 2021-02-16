@@ -50,7 +50,7 @@ const mapStateToProps = state => {
   };
 };
 
-import actionCreater from '../redux/actionCreators.jsx';
+import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setBCElement: (d) => dispatch(actionCreater.setState('BCElement',d))
 })

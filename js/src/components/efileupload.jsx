@@ -1,120 +1,203 @@
-import React from "react";
-import cookie from "react-cookies";
+import React from 'react';
+import cookie from 'react-cookies';
+import { connect } from 'react-redux';
+import actionCreater from '../redux/actionCreators';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { IconButton } from '@material-ui/core';
+import { withStyles } from "@material-ui/core/styles";
+import clsx from 'clsx'
+
+const styles = theme => ({
+  dropzone: {
+    height: 200,
+    width: 200,
+    backgroundColor: '#fff',
+    border: '2px dashed rgb(187, 186, 186)',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    fontSize: 16,
+  },
+  highlight: {
+    backgroundColor: 'rgb(188, 185, 236)',
+  }
+});
 
 //For upload form
-class FileUploadForm extends React.Component {
-    handleSubmit(event){
-        event.preventDefault();
-        const form = this.refs.submit_form;
-        const self = this;
-        var formData = new FormData(form);
-        fetch("./file_upload", {
-            method: 'post',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(res => this.props.onFileUpload(data));
-    }
-    render() {
-        return (
-            <div>
-                <form method="POST" encType="multipart/form-data" onSubmit={this.handleSubmit.bind(this)} ref='submit_form'>
-                    <input
-                        type="hidden"
-                        value={cookie.load("csrftoken")}
-                        name="csrfmiddlewaretoken"
-                    />
-                    <input type="file" name="document" ></input>
-                    <button type="submit">Upload</button>
-                </form>
-            </div>
-        );
-    }
+class FileUploadFormX extends React.Component {
+  constructor(props){
+    super(props);
+    this.fileInputRef = React.createRef();
+    this.formRef = React.createRef();
+    this.state = { hightlight: false };
+  }
+
+  onDragOver(evt){
+    evt.preventDefault();
+    if (this.props.disabled) return;
+    this.setState({ hightlight: true });
+  }
+
+  onDragLeave(){
+    this.setState({ hightlight: false });
+  }
+  
+  onDrop(event){
+    event.preventDefault();
+    if (this.props.disabled) return;
+    const files = event.dataTransfer.files;
+    this.fileInputRef.current.files=files;
+    this.setState({ hightlight: false });
+    this.handleSubmit();
+  }
+  
+  onFileAdded(evt){
+    this.handleSubmit();
+  }
+  
+  handleSubmit(event){
+    if(event)
+      event.preventDefault();
+    let form = this.formRef.current;
+    let formData = new FormData(form);
+    fetch("./file_upload", {
+      method: 'post',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(res => this.props.onFileUpload(res));
+  }
+  
+  openFileDialog() {
+    if (this.props.disabled) return;
+    this.fileInputRef.current.click();
+  }
+
+  render() {
+    const { classes } = this.props;
+    return (
+      <div
+        className={clsx(
+          classes.dropzone,
+          this.state.hightlight && classes.highlight
+        )}
+        onDragOver={this.onDragOver.bind(this)}
+        onDragLeave={this.onDragLeave.bind(this)}
+        onDrop={this.onDrop.bind(this)}
+        onClick={this.openFileDialog.bind(this)}
+        style={{ cursor: this.props.disabled ? "default" : "pointer" }}
+        >
+        <CloudUploadIcon style={{ fontSize: "64px" }} />
+        <span>Upload File</span>
+        <form 
+          method="POST"
+          encType="multipart/form-data"
+          onSubmit={this.handleSubmit.bind(this)}
+          ref={this.formRef}
+          style={{display:"none"}}
+        >
+          <input
+            type="hidden"
+            value={cookie.load("csrftoken")}
+            name="csrfmiddlewaretoken"
+          />
+          <input
+            type="file"
+            name="document"
+            ref={this.fileInputRef}
+            onChange={this.onFileAdded.bind(this)}
+            />
+        </form>
+      </div>
+    );
+  }
 }
+
+const FileUploadForm = withStyles(styles)(FileUploadFormX);
 
 //Single option for sheet
 //Display attributes, later may be change attributes too
 function SheetOption(props){
-    return(
-        <div style={{border: "2px solid", margin: 1}}>
-            {props.sheetName}
-            {props.sheetName==props.currentSheet?
-            `[Selected]`:
-            <button key={props.sheetName} onClick={()=>props.setSheet(props.sheetName)}>Select</button>
-            }
-            <br/>
-            {Object.keys(props.attributes).map(attr=>
-                <span key={attr}>{attr}: {props.attributes[attr]}<br/></span>
-            )}
-        </div>
-    );
+  return(
+    <div style={{border: "2px solid", margin: 1}}>
+      {props.sheetName}
+      {props.sheetName==props.currentSheet?
+      `[Selected]`:
+        <button key={props.sheetName} onClick={()=>props.setSheet(props.sheetName)}>Select</button>
+      }
+      <br/>
+      {Object.keys(props.attributes).map(attr=>
+        <span key={attr}>{attr}: {props.attributes[attr]}<br/></span>
+      )}
+    </div>
+  );
 };
 
 //Selection between sheets
 //Connects to react store
 class SheetSelector extends React.Component {
-    constructor(props){
-        super(props);
-        if (props.savedSheets){
-            this.state = {activeSheet: null};
-            return;//Do noting if there are previously saved sheets
-        }
-        //Check if no uploaded contents search in saved if any
-        var sheets = props.sheets || {};
-        props.saveSheets(sheets);//else save and update
-        const firstKey = Object.keys(sheets)[0];
-        this.state = {activeSheet: firstKey};
-        if(firstKey){
-            props.setSheet(sheets[firstKey]);
-        }
+  constructor(props){
+    super(props);
+    if (props.savedSheets){
+      this.state = {activeSheet: null};
+      return;//Do noting if there are previously saved sheets
     }
-    componentDidUpdate(prevProps){
-        if (prevProps.sheets !== this.props.sheets) {
-            if (Object.keys(this.props.sheets).length==0)
-                return;
-            this.props.saveSheets(this.props.sheets);
-            const firstKey = Object.keys(this.props.sheets)[0];
-            this.setState({activeSheet: firstKey});
-            if(firstKey){
-                this.props.setSheet(this.props.sheets[firstKey]);
-            }
-        }
+    //Check if no uploaded contents search in saved if any
+    let sheets = props.sheets || {};
+    props.saveSheets(sheets);//else save and update
+    const firstKey = Object.keys(sheets)[0];
+    this.state = {activeSheet: firstKey};
+    if(firstKey)
+      props.setSheet(sheets[firstKey]);
+  }
+  
+  componentDidUpdate(prevProps){
+    if (prevProps.sheets !== this.props.sheets) {
+      if (Object.keys(this.props.sheets).length==0)
+        return;
+      this.props.saveSheets(this.props.sheets);
+      const firstKey = Object.keys(this.props.sheets)[0];
+      this.setState({activeSheet: firstKey});
+      if(firstKey)
+        this.props.setSheet(this.props.sheets[firstKey]);
     }
-    selectSheet(sheetName){
-        var sheets = this.props.sheets || {};
-        if (Object.keys(sheets).length==0)
-            sheets = this.props.savedSheets || {};
-        this.setState({activeSheet: sheetName});
-        this.props.setSheet(sheets[sheetName]);
-    }
+  }
+  
+  selectSheet(sheetName){
+    let sheets = this.props.sheets || {};
+    if (Object.keys(sheets).length==0)
+      sheets = this.props.savedSheets || {};
+    this.setState({activeSheet: sheetName});
+    this.props.setSheet(sheets[sheetName]);
+  }
 
-    render(){
-        var sheets = this.props.sheets || {};
-        if (Object.keys(sheets).length==0)
-            sheets = this.props.savedSheets || {};
-        return(
-            <div>
-                {Object.keys(sheets).map(name=>
-                    <SheetOption 
-                        key={name} sheetName={name}
-                        currentSheet={this.state.activeSheet}
-                        setSheet={this.selectSheet.bind(this)}
-                        attributes={sheets[name].attributes}
-                        />
-                )}
-            </div>
-        )
-    };
+  render(){
+    let sheets = this.props.sheets || {};
+    if (Object.keys(sheets).length==0)
+      sheets = this.props.savedSheets || {};
+    return(
+      <div>
+        {Object.keys(sheets).map(name=>
+          <SheetOption 
+            key={name} sheetName={name}
+            currentSheet={this.state.activeSheet}
+            setSheet={this.selectSheet.bind(this)}
+            attributes={sheets[name].attributes}
+          />
+        )}
+      </div>
+    )
+  };
 }
 
-import { connect } from "react-redux";
 const mapStateToProps = state => {
   return {
     savedSheets: state.state.sheets
   };
 };
 
-import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setSheet: (d) => dispatch(actionCreater.setState('sheet',d)),
   saveSheets: (d) => dispatch(actionCreater.setState('sheets',d))
@@ -124,24 +207,23 @@ const SheetSelectorG = connect(mapStateToProps, mapDispatchToProps)(SheetSelecto
 
 //Full page
 class efileupload extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {sheets: {}};
-    }
+  constructor(props){
+    super(props);
+    this.state = {sheets: {}};
+  }
 
-    handleOnFileUpload(content){
-        this.setState({sheets: content});
-    }
-    
-    render(){
-        return(
-            <div>
-                <FileUploadForm onFileUpload={this.handleOnFileUpload.bind(this)}/>
-                <SheetSelectorG sheets={this.state.sheets}/>
-                <span>*You can skip this step and directly go to editing.</span>
-            </div>
-        );
-    }
+  handleOnFileUpload(content){
+    this.setState({sheets: content});
+  }
+
+  render(){
+    return (
+      <div>
+      <FileUploadForm onFileUpload={this.handleOnFileUpload.bind(this)}/>
+      <SheetSelectorG sheets={this.state.sheets}/>
+      </div>
+    );
+  }
 }
 
 export default efileupload;

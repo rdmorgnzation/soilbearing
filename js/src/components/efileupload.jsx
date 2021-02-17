@@ -17,7 +17,7 @@ const styles = theme => ({
   dropzone: {
     height: 200,
     width: 200,
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.background.paper,
     border: '2px dashed rgb(187, 186, 186)',
     borderRadius: '50%',
     display: 'flex',
@@ -25,6 +25,7 @@ const styles = theme => ({
     justifyContent: 'center',
     flexDirection: 'column',
     fontSize: 16,
+    color: theme.palette.text.primary,
   },
   highlight: {
     backgroundColor: 'rgb(188, 185, 236)',
@@ -121,7 +122,7 @@ class FileUploadFormX extends React.Component {
   }
 }
 
-const FileUploadForm = withStyles(styles)(FileUploadFormX);
+const FileUploadForm = withStyles(styles,{ withTheme: true })(FileUploadFormX);
 
 //Single option for sheet
 //Display attributes, later may be change attributes too

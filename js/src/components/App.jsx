@@ -21,7 +21,6 @@ import FInfo from './finfo';
 import MPage from './mpage';
 import SLayerEditing from './slayerediting';
 import Results from './results';
-import Attributes from './attributes';
 import MainPage from './main_page';
 
 import CustomSnackbar from './CustomSnackbar';
@@ -46,7 +45,6 @@ const navLinks = [
   { title: 'Soil Layer Editing', path: '/slayerediting', component: SLayerEditing },
   { title: 'Results', path: '/results', component: Results },
   { title: 'Map Page', path: '/mpage', component: MPage },
-  { title: 'Attributes', path: '/attributes', component: Attributes },
 ];
 
 const App = (props) => {

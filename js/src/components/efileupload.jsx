@@ -234,7 +234,7 @@ class efileupload extends React.Component {
 
   render(){
     return (
-      <Grid container spacing={2} style={{alignItems: 'center'}}>
+      <Grid container spacing={2} style={{alignItems: 'center', padding:6}}>
         <Grid item>
           <FileUploadForm onFileUpload={this.handleOnFileUpload.bind(this)}/>
         </Grid>

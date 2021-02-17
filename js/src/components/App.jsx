@@ -90,7 +90,7 @@ const App = (props) => {
             </Tooltip>
           </Toolbar>
         </AppBar>
-        <Box style={{padding:16}}>
+        <Box>
         <Route exact path="/" component={MainPage} />
         {navLinks.map(({ title, path, component }) => (
           <Route key={title} path={path} component={component} />

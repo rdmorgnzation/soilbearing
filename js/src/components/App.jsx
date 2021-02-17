@@ -5,6 +5,7 @@ import {
   AppBar, Toolbar, IconButton, makeStyles,
   List, ListItem, ListItemText,
 } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 // icons
 import { Home } from '@material-ui/icons';
 // our components
@@ -70,10 +71,12 @@ const App = () => {
             </List>
           </Toolbar>
         </AppBar>
+        <Box style={{padding:16}}>
         <Route exact path="/" component={MainPage} />
         {navLinks.map(({ title, path, component }) => (
           <Route key={title} path={path} component={component} />
         ))}
+        </Box>
       </HashRouter>
     </>
   );

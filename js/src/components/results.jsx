@@ -87,7 +87,7 @@ class calcResults extends React.Component {
         </Typography>
         <Divider/>
         <Button
-        variant="contained"
+        variant="outlined"
         color="primary"
         endIcon={<ForwardIcon/>}
         onClick={this.calculate.bind(this)}
@@ -203,7 +203,7 @@ class LocResultsX extends React.Component {
                   onChange={this.handleChange.bind(this)}
                   />
                 <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 style={{margin:3}}
                 onClick={this.geocode.bind(this)}
@@ -212,6 +212,7 @@ class LocResultsX extends React.Component {
                 </Button>
                 <TextField
                   name="location"
+                  label="Location"
                   value={this.state.location}
                   onChange={this.handleChange.bind(this)}
                   />
@@ -253,7 +254,7 @@ class LocResultsX extends React.Component {
           </tbody>
         </table>
         <Button
-        variant="contained"
+        variant="outlined"
         color="primary"
         endIcon={<ForwardIcon/>}
         style={{margin:3}}

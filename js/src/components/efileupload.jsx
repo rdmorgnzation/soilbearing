@@ -3,7 +3,6 @@ import cookie from 'react-cookies';
 import { connect } from 'react-redux';
 import actionCreater from '../redux/actionCreators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { IconButton } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import clsx from 'clsx'
 import Card from '@material-ui/core/Card';
@@ -147,7 +146,13 @@ function SheetOption(props){
       </CardContent>
       {props.sheetName!=props.currentSheet &&
         <CardActions>
-          <Button key={props.sheetName} onClick={()=>props.setSheet(props.sheetName)}>Select</Button>
+          <Button 
+            key={props.sheetName}
+            onClick={()=>props.setSheet(props.sheetName)}
+            variant="outlined"
+          >
+            Select
+          </Button>
         </CardActions>
       }
       <br/>

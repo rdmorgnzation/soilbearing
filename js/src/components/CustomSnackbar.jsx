@@ -5,7 +5,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { connect } from 'react-redux';
 
-import * as type from '../redux/type';
 import actionCreater from '../redux/actionCreators';
 
 function Alert(props) {
@@ -51,12 +50,12 @@ class CustomSnackbar extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    snackbar: state.state[type.snackbar]
+    snackbar: state.state.snackbar
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  setSnackbar: (d) => dispatch(actionCreater.setState(type.snackbar,d))
+  setSnackbar: (d) => dispatch(actionCreater.setState('snackbar',d))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomSnackbar);

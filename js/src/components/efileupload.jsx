@@ -12,6 +12,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 
 const styles = theme => ({
   dropzone: {
@@ -67,6 +68,11 @@ class FileUploadFormX extends React.Component {
   handleSubmit(event){
     if(event)
       event.preventDefault();
+    let path = this.fileInputRef.current.value.toLowerCase();
+    if (!(path.endsWith('.xls') || path.endsWith('.xlsx'))){
+      _SB.toast.error("Unsupported file extension.");
+      return;
+      }
     let form = this.formRef.current;
     let formData = new FormData(form);
     fetch("./file_upload", {
@@ -85,7 +91,7 @@ class FileUploadFormX extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div
+      <Box
         className={clsx(
           classes.dropzone,
           this.state.hightlight && classes.highlight
@@ -117,7 +123,7 @@ class FileUploadFormX extends React.Component {
             onChange={this.onFileAdded.bind(this)}
             />
         </form>
-      </div>
+      </Box>
     );
   }
 }
@@ -234,12 +240,14 @@ class efileupload extends React.Component {
 
   render(){
     return (
-      <Grid container spacing={2} style={{alignItems: 'center', padding:6}}>
-        <Grid item>
-          <FileUploadForm onFileUpload={this.handleOnFileUpload.bind(this)}/>
+      <Box style={{padding:6, overflow: 'clip'}}>
+        <Grid container spacing={2}>
+          <Grid item>
+            <FileUploadForm onFileUpload={this.handleOnFileUpload.bind(this)}/>
+          </Grid>
+          <SheetSelectorG sheets={this.state.sheets}/>
         </Grid>
-        <SheetSelectorG sheets={this.state.sheets}/>
-      </Grid>
+      </Box>
     );
   }
 }

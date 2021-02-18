@@ -71,11 +71,8 @@ class calcResults extends React.Component {
       mode: 'same-origin',
       body: JSON.stringify({sheet: this.props.sheet, footing: this.props.foundation})
     })
-    .then((response)=>{
-      response.json().then((data)=> {
-        this.setState(data);
-      });
-    });
+    .then(res => res.json())
+    .then(res => this.setState(res));
   }
 
   render() {
@@ -163,6 +160,21 @@ class LocResultsX extends React.Component {
     }
     this.setState({[evt.target.name]: evt.target.value});
   };
+  
+  geocode(){
+    fetch("./geocode?"+new URLSearchParams({
+      location: this.state.location,
+    }))
+    .then(res => res.json())
+    .then(res => {
+      if (res.result){
+        let latlong = res.result[0]+", "+res.result[1];
+        this.setState({latlong});
+      }else{
+        _SB.toast.error("Can't geocode");
+      }
+    });
+  }
 
   render() {
     let selectedFile=this.props.selectedFile;
@@ -190,6 +202,7 @@ class LocResultsX extends React.Component {
                 variant="contained"
                 color="primary"
                 style={{margin:3}}
+                onClick={this.geocode.bind(this)}
                 >
                   Geocode
                 </Button>

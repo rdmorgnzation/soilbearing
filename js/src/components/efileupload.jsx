@@ -189,6 +189,7 @@ class SheetSelector extends React.Component {
     let sheets = this.props.sheets || {};
     if (Object.keys(sheets).length==0)
       sheets = this.props.savedSheets || {};
+    _SB.toast.info(sheetName + " loaded.");
     this.setState({activeSheet: sheetName});
     this.props.setSheet(sheets[sheetName]);
   }

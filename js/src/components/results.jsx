@@ -55,10 +55,14 @@ class calcResults extends React.Component {
   }
 
   calculate(){
-    if(!this.props.sheet)
+    if(!this.props.sheet){
       _SB.toast.error("Data not set");
-    if(!this.props.foundation)
+      return;
+    }
+    if(!this.props.foundation){
       _SB.toast.error("Foundation info not set");
+      return;
+    }
     const request = new Request(
       "./get_result",
       {headers: {

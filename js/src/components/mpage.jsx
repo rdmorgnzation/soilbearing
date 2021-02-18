@@ -3,12 +3,13 @@ import MapView from "../mapview/App"
 
 class mpage extends React.Component {
   render() {
-    return (
+// modifying it  
+/*    return (
       <div>
         <MapView/>
-        <br/>*
       </div>
-    );
+    );*/
+    return (<></>);
   }
 }
 

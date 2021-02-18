@@ -542,6 +542,8 @@ class BoreholeLog(Base):
             self.attributes = None
             return
         self.attributes = self._get_attributes()
+        if not 'location' in self.attributes:
+          self.attributes['location']=""
         self._row_list_expand()
         self._map_var_row = self._get_map_var_row()
         self._cols = self._get_best_cols()

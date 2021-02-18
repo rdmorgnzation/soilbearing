@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import configureStore from "./redux/configureStore";
-import config from './config.json';
 import actionCreater from './redux/actionCreators';
 import toast from './components/toast';
 
@@ -15,12 +14,16 @@ import App from './components/App';
 const Root = props => {
   const store = configureStore();
   window._SB.store = store;
-  store.dispatch(actionCreater.setConfig(config));
   return(
     <Provider store={store}>
       <App />
     </Provider>
   );
 };
+
+// Get config from server and set it
+fetch("./get_config")
+.then(res => res.json())
+.then(res => _SB.store.dispatch(actionCreater.setConfig(res)));
 
 ReactDOM.render(<Root />, document.getElementById('app'));

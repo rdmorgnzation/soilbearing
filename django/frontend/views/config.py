@@ -6,12 +6,12 @@ file_list = [
     {
        'text': 'DEFAULT',
        'description': '2x2 foundation, Bearing Capacities(*old)',
-       'file': '/old.json',
+       'file': '/static/old.json',
        },
     {
        'text': 'DEFAULT2',
        'description': '2_2x2 foundation, Bearing Capacities(*old)',
-       'file': '/old.json',
+       'file': '/static/old.json',
        },
 ]
 

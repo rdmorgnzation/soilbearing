@@ -1,6 +1,7 @@
 import React from "react";
 import cookie from "react-cookies";
 import actionCreater from '../redux/actionCreators';
+import getBC from '../mapview/helper';
 import { connect } from "react-redux";
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
@@ -118,6 +119,7 @@ class LocResultsX extends React.Component {
             latlong: "27., 85.",
             location: "",
             depth: 1.5,
+            results: {},
         };
     if(props.sheet)
       this.state.location = props.sheet.attributes.location;
@@ -176,6 +178,23 @@ class LocResultsX extends React.Component {
         this.setState({latlong});
       }else{
         _SB.toast.error("Can't geocode");
+      }
+    });
+  }
+  
+  calculate(){
+    // Continue function to continue
+    const val=this.state.latlong;
+    const pos=val.indexOf(", ");
+    const lat = val.substring(0,pos);
+    const long = val.substring(pos+2,val.length);
+    _SB.storedFetch(this.props.selectedFile.file)
+    .then(res => {
+      let c = getBC(lat, long, this.state.depth, res);
+      if (c.success){
+        this.setState({results: c.message});
+      }else{
+        _SB.toast.error(c.message);
       }
     });
   }
@@ -258,9 +277,11 @@ class LocResultsX extends React.Component {
         color="primary"
         endIcon={<ForwardIcon/>}
         style={{margin:3}}
+        onClick={this.calculate.bind(this)}
         >
           Calculate
         </Button>
+        <MVTable results={this.state.results} />
       </Paper>
     )
   }

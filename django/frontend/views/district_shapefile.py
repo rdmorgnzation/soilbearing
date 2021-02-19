@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from django.http import HttpResponseNotFound
 from shapely.geometry import LineString, Polygon
 import geopandas as gpd
+import json
 
 from . import resources
 
@@ -33,5 +34,5 @@ def get_district_polygon(request):
     newdata['geometry'] = None
     newdata.crs = data.crs
     newdata.loc[0, 'geometry'] = Polygon(linestring)
-    return JsonResponse(newdata.to_json(),safe=False)
+    return JsonResponse(json.loads(newdata.to_json()))
 

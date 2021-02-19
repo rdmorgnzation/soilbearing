@@ -42,6 +42,7 @@ function getBC(lat, lon, depth, data, methodid){
   let depths = Object.keys(points[0].datas);
   let mid;// index of lower depth
   for (mid=0;depths[mid]<depth;mid++);
+  if(mid>0)mid--;
   if(!methodid){
     let n = data.methods.length;
     methodid=[...Array(n).keys()];

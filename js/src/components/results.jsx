@@ -9,44 +9,9 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import ForwardIcon from '@material-ui/icons/Forward';
 import Button from '@material-ui/core/Button';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
-
-function MVTable(props){
-  return(
-    <Box style={{padding:6}}>
-      {Object.keys(props.results).length!=0 &&
-        <TableContainer component={Paper}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Method</TableCell>
-                <TableCell>Value</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
-                Object.keys(props.results).map((method)=>
-                  <TableRow key="{method}">
-                    <TableCell>{method}</TableCell>
-                    <TableCell align="right">{props.results[method]}</TableCell>
-                  </TableRow>
-                )
-              }              
-            </TableBody>
-          </Table>
-        </TableContainer>
-      }
-    </Box>
-  )
-}
-
+import MVTable from './mvtable';
 
 // Show results from calculation
 class calcResults extends React.Component {
@@ -212,13 +177,19 @@ class LocResultsX extends React.Component {
         <table>
           <tbody>
             <tr>
-              <td>
+              <td style={{verticalAlign: 'text-top', paddingTop:7}}>
                 <Typography>Latitude, Longitude</Typography>
               </td>
               <td>
                 <TextField
                   name="latlong"
                   value={this.state.latlong}
+                  onChange={this.handleChange.bind(this)}
+                  /><br/>
+                <TextField
+                  name="location"
+                  label="Location"
+                  value={this.state.location}
                   onChange={this.handleChange.bind(this)}
                   />
                 <Button
@@ -229,12 +200,6 @@ class LocResultsX extends React.Component {
                 >
                   Geocode
                 </Button>
-                <TextField
-                  name="location"
-                  label="Location"
-                  value={this.state.location}
-                  onChange={this.handleChange.bind(this)}
-                  />
               </td>
             </tr>
             <tr>

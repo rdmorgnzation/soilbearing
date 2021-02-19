@@ -8,11 +8,6 @@ file_list = [
        'description': '2x2 foundation, Bearing Capacities(*old)',
        'file': '/static/old.json',
        },
-    {
-       'text': 'DEFAULT2',
-       'description': '2_2x2 foundation, Bearing Capacities(*old)',
-       'file': '/static/old.json',
-       },
 ]
 
 @api_view()

@@ -18,7 +18,7 @@ import actionCreater from '../redux/actionCreators';
 // our components
 import EFileUpload from './efileupload';
 import FInfo from './finfo';
-import MPage from './mpage';
+import MPage from '../mapview/App';
 import SLayerEditing from './slayerediting';
 import Results from './results';
 import MainPage from './main_page';
@@ -26,6 +26,19 @@ import MainPage from './main_page';
 import CustomSnackbar from './CustomSnackbar';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  content: {
+    flexGrow: 1,
+    height: 0, // required else height: 100%
+               // would't work in child
+               // some workaround
+               // another is to use margin:auto in child
+               // not worked in firefox
+  },
   navDisplayFlex: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -53,10 +66,13 @@ const App = (props) => {
                     'dark' : 'light';
   return (
     <>
-      <CssBaseline />
+    <CssBaseline />
+    <Box className={classes.root}>
+      
       <CustomSnackbar />
       <HashRouter>
-        <AppBar position="static" color={props.currentTheme === 'light' ?"primary":"#424242"}>
+        <AppBar position="static"
+          color={props.currentTheme === 'light' ?"primary":"#424242"}>
           <Toolbar>
             <NavLink to="/" className={classes.linkIcon}>
               <IconButton edge="start" color="inherit" aria-label="home">
@@ -90,13 +106,14 @@ const App = (props) => {
             </Tooltip>
           </Toolbar>
         </AppBar>
-        <Box>
-        <Route exact path="/" component={MainPage} />
-        {navLinks.map(({ title, path, component }) => (
-          <Route key={title} path={path} component={component} />
-        ))}
+        <Box className={classes.content}>
+          <Route exact path="/" component={MainPage} />
+          {navLinks.map(({ title, path, component }) => (
+            <Route key={title} path={path} component={component} />
+          ))}
         </Box>
       </HashRouter>
+    </Box>
     </>
   );
 };

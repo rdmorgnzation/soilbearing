@@ -2,32 +2,38 @@ import React from "react";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
+import Box from '@material-ui/core/Box';
 
 export class MethodSelect extends React.Component {
   constructor(props){
     super(props);
-    var key=props.config.methods[props.config.methods.length-1];
-    this.props.setMethod(key);
+    props.setMethod(0);
   }
 
+  componentDidUpdate(prevProps) {
+    //Config updated
+    if (prevProps.methods !== this.props.methods) {
+      this.props.setMethod(0);
+    }
+  };
+
   handleChange(event, value){
-    this.props.setMethod(value.props.children);
+    this.props.setMethod(value.props.value);
   }
   render(){
-    var keys = this.props.config.methods;    
     return(
-      <div>
+      <Box>
         <Tooltip title="Method">
           <Select
-            value={this.props.method || keys[keys.length-1]}
+            value={this.props.method || 0}
             onChange={this.handleChange.bind(this)}
-          >{}
-            {keys.map(i=>
-                <MenuItem value={i} key={i}>{i}</MenuItem>
+          >
+            {this.props.methods.map((d,i)=>
+                <MenuItem value={i} key={i}>{d}</MenuItem>
                 )}
           </Select>
         </Tooltip>
-      </div>
+      </Box>
     )
   }
 }
@@ -36,7 +42,6 @@ import { connect } from "react-redux";
 const mapStateToProps = state => {
   return {
     method: state.state.method,
-    config: state.config,
   };
 };
 

@@ -3,23 +3,11 @@ import DepthSlider from './DepthSlider';
 import LocationDisplay from './LocationDisplay';
 import DistrictSelect from './DistrictSelect';
 import MethodSelect from './MethodSelect';
-//import GetAppIcon from '@material-ui/icons/GetApp';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 export class InputOverlay extends React.Component {
-  constructor(props){
-    super(props);
-    this.state={guide: null};
-  }
-  componentDidMount(){
-    const guide = this.refs.main;
-    this.setState({guide});
-  }
-  downloadCanvas(){
-    window.location.assign(this.props.canvas.toDataURL());
-  }
   copyCapacity(){
     var textArea = document.createElement('textarea');
     textArea.value=this.props.clipboard;
@@ -27,23 +15,23 @@ export class InputOverlay extends React.Component {
     textArea.select();
     document.execCommand('copy');
     textArea.remove();
-  }  
+  }
+
   render(){
     return(
-      <div ref='main' style={{width:400,height:300,position:"absolute"}}>
-        <div style={{position:"absolute",top:90, zIndex:1100}}>
-          <DepthSlider/>
+      <div ref='main' style={{color:'#000', width:'100%',height:'100%',position:'absolute'}}>
+        <div style={{position:"absolute",bottom:90, zIndex:1100}}>
+          <DepthSlider ranges={this.props.file.depth}/>
         </div>
         <div style={{position:"absolute",top:0, right:0, zIndex:1100}}>
           <LocationDisplay/>
         </div>
         <div style={{position:"absolute",bottom:0, right:0, zIndex:1100}}>
-          <DistrictSelect/>
+          <DistrictSelect districts={this.props.file.Districts}/>
         </div>
         <div style={{position:"absolute",bottom:0, left:3, zIndex:1100}}>
-          <MethodSelect/>
+          <MethodSelect methods={this.props.file.methods}/>
         </div>
-        <div style={{color:'#faa', paddingLeft:3,position:"absolute",bottom:6, left:125, zIndex:1100}}> Use at your own risk</div>
         <div style={{position:"absolute",bottom:45, top: 45,right:0, zIndex:1100}}>
           <Tooltip title="Copy bearing capacity">
             <IconButton onClick={this.copyCapacity.bind(this)}>
@@ -55,7 +43,6 @@ export class InputOverlay extends React.Component {
     )
   }
 }
-// Download icon
 
 import { connect } from "react-redux";
 const mapStateToProps = state => {

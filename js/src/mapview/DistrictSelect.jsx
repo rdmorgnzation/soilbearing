@@ -2,51 +2,49 @@ import React from "react";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
+import Box from '@material-ui/core/Box';
 
-export class LocationDisplay extends React.Component {
+export class DistrictSelect extends React.Component {
   constructor(props){
     super(props);
-    var key;
-    for (var i in props.config.district){
-        key=i;
-        break;
-    }
-    //console.log(keys);
-    props.setDistrict(key);
+    if(!this.props.district)
+      props.setDistrict(0);
   }
 
-  handleChange(event, value){
-    this.props.setDistrict(value.props.children);
-  }
-  render(){
-    var keys = [];
-    for (var i in this.props.config.district){
-      //if(this.props.config.district[i].hasOwnProperty('neighbours'))
-        keys.push({key:keys.length, value:i});
+  componentDidUpdate(prevProps) {
+    //Config updated
+    if (prevProps.districts !== this.props.districts) {
+      this.props.setDistrict(0);
     }
-    
+  };
+
+  handleChange(event, value){
+    this.props.setDistrict(value.props.value);
+  }
+  
+  render(){
     return(
-      <div>
+      <Box>
         <Tooltip title="District">
           <Select
-            value={this.props.district || keys[0].value}
+            value={this.props.district || 0}
             onChange={this.handleChange.bind(this)}
-          >{}
-            {keys.map(i=>
-                <MenuItem value={i.value} key={i.key}>{i.value}</MenuItem>
+          >
+            {this.props.districts.map((d,i)=>
+                <MenuItem value={i} key={i}>{d}</MenuItem>
                 )}
           </Select>
         </Tooltip>
-      </div>
+      </Box>
     )
   }
 }
 
 import { connect } from "react-redux";
+
 const mapStateToProps = state => {
   return {
     district: state.state.district,
-    config: state.config,
   };
 };
 
@@ -54,4 +52,5 @@ import actionCreater from '../redux/actionCreators';
 const mapDispatchToProps = dispatch => ({
   setDistrict: (d) => dispatch(actionCreater.setState('district',d))
 })
-export default connect(mapStateToProps, mapDispatchToProps)(LocationDisplay);
+
+export default connect(mapStateToProps, mapDispatchToProps)(DistrictSelect);

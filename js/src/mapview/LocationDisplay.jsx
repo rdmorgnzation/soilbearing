@@ -1,6 +1,7 @@
 import React from "react";
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
+import Box from '@material-ui/core/Box';
 
 export class LocationDisplay extends React.Component {
   constructor(props){
@@ -12,14 +13,15 @@ export class LocationDisplay extends React.Component {
   }
   render(props){
     return(
-      <div>
+      <Box>
           <Tooltip title="Show borehole location">
           <Checkbox
             color="primary"
+            value={this.props.showLocation}
             onChange={this.handleChange.bind(this)}
           />
           </Tooltip>
-      </div>
+      </Box>
     )
   }
 }

@@ -62,7 +62,10 @@ def get_result(request):
     #Change to enum
     request.data['footing']['Type'] = FootingType(request.data['footing']['Type'])
     for prop in request.data['footing']:
-        footing[FootingData(prop)] = request.data['footing'][prop]
+        if prop!='Type':
+          footing[FootingData(prop)] = float(request.data['footing'][prop])
+        else:
+          footing[FootingData(prop)] = request.data['footing'][prop]
     assembly = Assembly(footing, soil_layer)
     solver = Solver(assembly)
     result = solver.run()

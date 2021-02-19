@@ -44,8 +44,9 @@ There are 2 options:-
 Calculation as per above datas.
 
 ##### Calculate from Interpolation
-![preview_mode](media/images/preview_mode.png)
+![preview_mode](media/images/ID.png)
 Datas interpolated by IDW from the project report datas.
+Geocode from name, to get latitude and longitude.
 
 ### Map Tab
 ![map_tab](media/images/map_page.png)

@@ -11,7 +11,7 @@
     <!-- title -->
     <title>GeoProject</title>
     <!-- add Loader -->
-    <style type="text/css">
+    <style>
       #loader {
       position: absolute;
       top: calc(50% - 20px);
@@ -73,6 +73,13 @@
      crossorigin=""></script>
     <!-- logo -->
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <script>
+    // Store global variables too for easy access in
+    window._SB = {
+      toast: {},
+      cache: {},//store get requests here
+    }
+    </script>
   </head>
   <body>
     <div id="app">

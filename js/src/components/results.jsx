@@ -42,7 +42,8 @@ class calcResults extends React.Component {
       body: JSON.stringify({sheet: this.props.sheet, footing: this.props.foundation})
     })
     .then(res => res.json())
-    .then(res => this.setState(res));
+    .then(res => this.setState(res))
+    .catch(error => _SB.toast.error(error.message));
   }
 
   render() {
@@ -144,7 +145,7 @@ class LocResultsX extends React.Component {
       }else{
         _SB.toast.error("Can't geocode");
       }
-    });
+    }).catch(error => _SB.toast.error(error.message));
   }
   
   calculate(){

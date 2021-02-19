@@ -118,6 +118,22 @@ const App = (props) => {
   );
 };
 
+const themes = {
+  light: createMuiTheme({
+          palette: {
+            type: 'light',
+          }
+        }),
+  dark: createMuiTheme({
+          palette: {
+            type: 'dark',
+          }
+        }),
+};
+
+// save themes
+window._SB.themes = themes;
+
 class ThemedApp extends React.Component {
   constructor(props){
     super(props);
@@ -132,13 +148,8 @@ class ThemedApp extends React.Component {
     let tplatte = 'light';
     if(this.props.theme)
       tplatte=this.props.theme;
-    const THEME = createMuiTheme({
-        palette: {
-          type: tplatte,
-        },
-      });
     return(
-      <MuiThemeProvider theme={THEME}>
+      <MuiThemeProvider theme={themes[tplatte]}>
         <App
           setTheme={this.setTheme.bind(this)}
           currentTheme={this.props.theme}

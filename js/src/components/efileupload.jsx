@@ -79,7 +79,8 @@ class FileUploadFormX extends React.Component {
       body: formData
     })
     .then(res => res.json())
-    .then(res => this.props.onFileUpload(res));
+    .then(res => this.props.onFileUpload(res))
+    .catch(error => _SB.toast.error(error.message));
   }
   
   openFileDialog() {

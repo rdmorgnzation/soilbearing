@@ -10,6 +10,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 export class App extends React.Component {
   loadFile(file){
@@ -58,7 +59,8 @@ export class App extends React.Component {
   
   render() {
     // Show loader till file is loaded
-    if(this.state.file){
+    // and leaflet is available
+    if(this.state.file && window.L){
       return(
         <Box display='flex' height='100%'>
           <Paper style={{width:200,overflow:'auto'}}>
@@ -84,10 +86,12 @@ export class App extends React.Component {
             )}
             </List>            
           </Paper>
-          <Box flexGrow={1} style={{position:'relative'}}>
-              <InputOverlay file={this.state.file}/>
-              <Canvas file={this.state.file}/>
-          </Box>
+          <ThemeProvider theme={_SB.themes.light}>
+            <Box flexGrow={1} style={{position:'relative'}}>
+                <InputOverlay file={this.state.file}/>
+                <Canvas file={this.state.file}/>
+            </Box>
+          </ThemeProvider>
         </Box>
       );
     }else{

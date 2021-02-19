@@ -24,10 +24,10 @@ export class DepthSlider extends React.Component {
 
   componentDidUpdate(prevProps) {
     //Config updated
-    if (prevProps !== this.props) {
+    if (prevProps.ranges !== this.props.ranges) {
       this.props.setDepth(this.props.ranges.min);
     }
-  };  
+  };
   
   handleChange(event, value){
     this.props.setDepth(a2r(value));

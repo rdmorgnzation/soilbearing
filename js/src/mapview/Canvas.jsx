@@ -45,13 +45,13 @@ export class Canvas extends React.Component {
     if (c.success){
       o = c.message[this.props.file.methods[this.props.method]];
     }
-    console.log(c);
     this.props.setBC(o);
     return o;
   }
   
   componentDidUpdate(prevProps){
     if (prevProps.district !== this.props.district) {
+      this.setState({file: null});
       this.loadFile(this.props.district);
     }
     if(!this.state.file)

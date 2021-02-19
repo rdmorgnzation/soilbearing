@@ -51,7 +51,9 @@ function getBC(lat, lon, depth, data, methodid){
   let m0=depths[mid];
   let r = (depth-m0)/(m1-m0);
   let out = {};
-  for (let d in methodid) {
+  console.log(methodid);
+  for (let c in methodid) {
+    let d = methodid[c];
     let p=[];//If dist 0 no IDW
     p[0] = interpolate(nearest[0].datas[m0][d], nearest[0].datas[m1][d], r);
     if (dis[0]<=1e-6){

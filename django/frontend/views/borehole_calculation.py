@@ -40,8 +40,8 @@ def json_material_to_py(data):
     for layer in data:
         lay = {}
         for prop in layer:
-            if prop=='tableData':
-                break
+            if prop!='GI':
+                layer[prop]=float(layer[prop])
             lay[SoilProperty(prop)] = layer[prop]
         res.append(lay)
     return res

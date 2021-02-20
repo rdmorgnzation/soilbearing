@@ -218,8 +218,13 @@ class LayerSoil(Base):
         while self._values[row_start][SoilProperty.depth]<depth/2:
             row_start+=1
         row_end = row_start
+        end_row = len(self._values)-1
+        if (self._values[end_row][SoilProperty.depth]<2*depth):
+          self._values[end_row][SoilProperty.depth]=2*depth
         while self._values[row_end][SoilProperty.depth]<2*depth:
             row_end+=1
+        if row_start==row_end:
+            return self._values[row_end][SoilProperty.N60]
         if row_start==0:
             depths.append(0.)
         else:

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Close } from '@material-ui/icons';
-import { IconButton } from '@material-ui/core';
+import Close from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { connect } from 'react-redux';

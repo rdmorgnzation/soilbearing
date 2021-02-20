@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "webpack --watch",
     "build": "webpack",
+    "release": "webpack --mode production",
     "pretest": "eslint --ext .jsx,.js . ",
     "fix": "eslint --ext .jsx,.js --fix"
   },

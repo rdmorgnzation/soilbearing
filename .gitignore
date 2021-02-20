@@ -9,6 +9,7 @@ __pycache__/
 *.pot
 *.bundle.js
 .tox/
+secrets/
 __pycache__
 MANIFEST
 dist/

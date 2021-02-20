@@ -1,5 +1,4 @@
 geopy
 xlrd
 openpyxl
-pyodbc
 requests

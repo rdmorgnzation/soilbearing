@@ -46,6 +46,28 @@ class calcResults extends React.Component {
     .catch(error => _SB.toast.error(error.message));
   }
 
+  saveResults(){
+    const request = new Request(
+      "./save_result",
+      {headers: {
+        'X-CSRFToken': cookie.load("csrftoken"),
+        "Content-Type": "application/json"
+        }}
+    );
+    fetch(request, {
+      method: 'post',
+      mode: 'same-origin',
+      body: JSON.stringify({
+          sheet: this.props.sheet,
+          footing: this.props.foundation,
+          results: this.state.results,
+    })
+    })
+    .then(res => res.json())
+    .then(res => _SB.toast.info("Data saved."))
+    .catch(error => _SB.toast.error(error.message));
+  }
+  
   render() {
     return (
       <Paper>
@@ -63,6 +85,17 @@ class calcResults extends React.Component {
           Calculate
         </Button>
         <MVTable results={this.state.results} />
+        {Object.keys(this.state.results).length!=0 &&
+            <Button
+            variant="outlined"
+            color="primary"
+            endIcon={<ForwardIcon/>}
+            onClick={this.saveResults.bind(this)}
+            style={{margin:3}}
+            >
+            Save Results
+            </Button>
+        }
       </Paper>
     )
    }

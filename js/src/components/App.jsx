@@ -25,6 +25,7 @@ import MPage from '../mapview/App';
 import SLayerEditing from './slayerediting';
 import Results from './results';
 import MainPage from './main_page';
+import viewdata from './viewdata';
 
 import CustomSnackbar from './CustomSnackbar';
 
@@ -61,6 +62,7 @@ const navLinks = [
   { title: 'Soil Layer Editing', path: '/slayerediting', component: SLayerEditing },
   { title: 'Results', path: '/results', component: Results },
   { title: 'Map Page', path: '/mpage', component: MPage },
+  { title: 'View', path: '/viewdata', component: viewdata },
 ];
 
 const App = (props) => {

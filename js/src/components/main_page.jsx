@@ -1,4 +1,5 @@
 import React from "react";
+import Link from '@material-ui/core/Link';
 
 import Attributes from './attributes';
 
@@ -11,7 +12,7 @@ class results extends React.Component {
         - Edit datas as necessary<br/>
         - Calculate result<br/>
         - Map page is available for Bearing capacity map<br/>
-        <a href="https://github.com/rdmorgnzation/soilbearing">Click here</a> to go to github page.
+        <Link href="https://github.com/rdmorgnzation/soilbearing">Click here</Link> to go to github page.
         <h2>Attributes</h2>
         <Attributes />
       </div>

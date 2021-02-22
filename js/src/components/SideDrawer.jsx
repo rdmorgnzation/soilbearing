@@ -6,15 +6,24 @@ import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
 
 const SideDrawer = (props) => {
-  const [state, setState] = useState({ display: false })
+  const [state, setState] = useState({ display: false });
   
-  const toggleDrawer = () => {
-    setState({ display: !state.display })
+  const toggleDrawer = event => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    )
+      return;
+    setState({ display: !state.display });
   }
   
   return (
     <Box>
-      <IconButton edge="start" onClick={toggleDrawer}>
+      <IconButton
+      edge="start"
+      onClick={toggleDrawer}
+      style={{color:'white'}}
+      >
         <Menu fontSize="large" />
       </IconButton>
       <Drawer
@@ -23,7 +32,11 @@ const SideDrawer = (props) => {
         onOpen={toggleDrawer}
         onClose={toggleDrawer}
       >
-        <Box style={{width:250}}>
+        <Box
+          style={{width:250}}
+          onClick={toggleDrawer}
+          onKeyDown={toggleDrawer}
+        >
           <List>
             {props.children}
           </List>

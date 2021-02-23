@@ -6,7 +6,10 @@ function FilteredInput(props){
   // Return new value or fale
   function filter(key, value){
     if(key=='GI'){
-      return value.toUpperCase();
+      if(/^[a-zA-Z]*$/.test(value))
+        return value.toUpperCase();
+      else
+        return false;
     }else{
       if(isNaN(value))
         return false;

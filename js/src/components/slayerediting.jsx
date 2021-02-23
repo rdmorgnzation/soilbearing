@@ -28,7 +28,7 @@ const columns = [
               initialEditValue: 'SW',
             },{
               name: 'SPT_N',
-              key: 'SPT <i>N</i>',
+              key: 'SPT_N',
               initialEditValue: 10,
               type: 'numeric',
             },{

@@ -13,11 +13,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Edit from '@material-ui/icons/Edit';
 import cookie from "react-cookies";
 
+import FilteredEdit from './FilteredEdit';
+
 const columns = [
             {
               name: '<depth',
               key: 'depth',
               initialEditValue: 1.,
+              frozen: true,
               type: 'numeric',
             },{
               name: 'GI',
@@ -85,29 +88,7 @@ class slayerediting extends React.Component {
       _SB.toast.info("No row selected");
     }
   }
-  
-  onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-      const rows = this.props.sheet.values.slice();
-      // Validate updated
-      let filtered={};
-      for (let i in updated){
-        if (i=="GI"){
-          let vl = updated[i].toUpperCase();
-          filtered[i] = vl;
-        }else{
-          if (!isNaN(updated[i]))
-            filtered[i] = updated[i];
-        }
-      }
-      for (let i = fromRow; i <= toRow; i++) {
-        rows[i] = { ...rows[i], ...filtered };
-      }
-      this.props.setSheet({
-                    ...this.props.sheet,
-                    values: rows
-                    });
-  };
-  
+    
   onAddRow() {
     let newData = {};
     for (let i in columns){
@@ -145,15 +126,22 @@ class slayerediting extends React.Component {
     .then(response => response.json())
     .then(data => this.setState({data: data.values, preview: true}))
     .catch(error => _SB.toast.error(error.message));
-  }  
-  
+  }
+    
+  onRowsChange(datas, pos){
+    this.props.setSheet({
+                    ...this.props.sheet,
+                    values: datas
+                    });
+  }
+    
   render() {
     let cols,displayData;
     if(this.state.preview){
-      cols=columns.map(d=>{d.editable=false;return d;});
+      cols=columns.map(d=>{d.editor=undefined;return d;});
       displayData=this.state.data;
     }else{
-      cols=columns.map(d=>{d.editable=true;return d;});
+      cols=columns.map(d=>{d.editor=FilteredEdit;return d;});
       displayData=[];
       if(this.props.sheet)
         displayData=this.props.sheet.values;
@@ -196,9 +184,8 @@ class slayerediting extends React.Component {
         <Box style={{color:"black"}}>
         <ReactDataGrid
           columns={cols}
-          rowGetter={i => displayData[i]}
-          rowsCount={displayData.length}
-          onGridRowsUpdated={this.onGridRowsUpdated}
+          rows={displayData}
+          onRowsChange={this.onRowsChange.bind(this)}
           enableCellSelect={!this.state.preview}
           onCellSelected={this.onSelectionChange.bind(this)}
         />

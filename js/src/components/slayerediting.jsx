@@ -28,7 +28,7 @@ const columns = [
               initialEditValue: 'SW',
             },{
               name: 'SPT_N',
-              key: 'SPT_N',
+              key: 'SPT <i>N</i>',
               initialEditValue: 10,
               type: 'numeric',
             },{
@@ -36,11 +36,11 @@ const columns = [
               key: 'cohesion',
               type: 'numeric',
             },{
-              name: 'phi',
+              name: 'φ',
               key: 'phi',
               type: 'numeric',
             },{
-              name: 'gamma',
+              name: 'γ',
               key: 'gamma',
               type: 'numeric',
             },{
@@ -52,7 +52,7 @@ const columns = [
               key: 'elasticity',
               type: 'numeric',
             },{
-              name: 'nu',
+              name: 'ν',
               key: 'nu',
               type: 'numeric',
             },{
@@ -60,7 +60,7 @@ const columns = [
               key: 'surcharge',
               type: 'numeric',
             },{
-              name: 'packing_case',
+              name: 'Packing Case',
               key: 'packing_case',
               type: 'numeric',
             },         

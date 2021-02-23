@@ -53,9 +53,11 @@ export class App extends React.Component {
    return () =>
     {
       const selectedFile=this.props.fileList[id];
-      selectedFile.id = id;
-      this.props.setSelectedFile(selectedFile);
-      this.setState({file: null});
+      if(this.props.selectedFile!=selectedFile){
+        selectedFile.id = id;
+        this.props.setSelectedFile(selectedFile);
+        this.setState({file: null});
+      }
     }
   }
   

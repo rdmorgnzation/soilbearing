@@ -11,6 +11,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import { ThemeProvider } from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
+import BottomDrawer from './BottomDrawer';
 
 export class App extends React.Component {
   loadFile(file){
@@ -58,13 +60,8 @@ export class App extends React.Component {
   }
   
   render() {
-    // Show loader till file is loaded
-    // and leaflet is available
-    if(this.state.file && window.L){
-      return(
-        <Box display='flex' height='100%'>
-          <Paper style={{width:200,overflow:'auto'}}>
-            <List>
+    const viewList = (
+            <>
               <ListItem>
                 <ListItemText primary="Latitude" secondary={(this.props.latitude||0).toFixed(6)} />
               </ListItem>
@@ -77,22 +74,60 @@ export class App extends React.Component {
               <ListItem>
                 <ListItemText primary="Capacity" secondary={(this.props.BC||0).toFixed(2)} />
               </ListItem>
-            <Divider/>
-            <Typography>Load file</Typography>
-            {this.props.fileList.map((d,i)=>
-              <ListItem button key={i} onClick={this.changeFile(i).bind(this)}>
-                <ListItemText primary={d.text} secondary={d.description} />
-              </ListItem>
-            )}
-            </List>            
-          </Paper>
-          <ThemeProvider theme={_SB.themes.light}>
-            <Box flexGrow={1} style={{position:'relative'}}>
-                <InputOverlay file={this.state.file}/>
-                <Canvas file={this.state.file}/>
+            </>
+                    );
+                    
+    const mapV = (
+              <ThemeProvider theme={_SB.themes.light}>
+                <Box flexGrow={1} style={{position:'relative'}}>
+                  <InputOverlay file={this.state.file}/>
+                  <Canvas file={this.state.file}/>
+                </Box>
+              </ThemeProvider>
+                );
+                
+    const fileListButton = (
+                    <>
+                      {(this.props.fileList||[]).map((d,i)=>
+                        <ListItem button key={i} onClick={this.changeFile(i).bind(this)}>
+                          <ListItemText primary={d.text} secondary={d.description} />
+                        </ListItem>
+                      )}
+                    </>
+                );
+    // Show loader till file is loaded
+    // and leaflet is available
+    if(this.state.file && window.L){
+      return(
+        <>
+          <Hidden smDown>
+            <Box display='flex' height='100%'>
+              <Paper style={{width:200,overflow:'auto'}}>
+                <List>
+                {viewList}
+                <Divider/>
+                <Typography>Load file</Typography>
+                {fileListButton}
+                </List>            
+              </Paper>
+              {mapV}
             </Box>
-          </ThemeProvider>
-        </Box>
+          </Hidden>
+          <Hidden mdUp>
+            <Box display='flex' height='100%' style={{flexDirection: 'column'}}>
+              {mapV}
+              <Paper style={{overflow:'auto'}}>
+                <List style={{display:'flex'}}>
+                  {viewList}
+                  <BottomDrawer>
+                    <Typography>Load file</Typography>
+                    <List>{fileListButton}</List>
+                  </BottomDrawer>
+                </List>
+              </Paper>
+            </Box>
+          </Hidden>
+        </>
       );
     }else{
       return (

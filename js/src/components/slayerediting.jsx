@@ -71,7 +71,7 @@ class slayerediting extends React.Component {
     super(props);
     //Check sheet if already created?
     if(!props.sheet)
-      props.setSheet({attributes:{}, values: []});    
+      props.setSheet({attributes:{}, values: []});
     this.state = {data: {}, preview: false};
   };
   
@@ -106,7 +106,7 @@ class slayerediting extends React.Component {
     }); 
   }
   
-  onSelectionChange({rowIdx}){
+  onSelectionChange(rowIdx){
     this.setState({selectedRow: rowIdx});
   }
   
@@ -186,8 +186,7 @@ class slayerediting extends React.Component {
           columns={cols}
           rows={displayData}
           onRowsChange={this.onRowsChange.bind(this)}
-          enableCellSelect={!this.state.preview}
-          onCellSelected={this.onSelectionChange.bind(this)}
+          onRowClick={this.onSelectionChange.bind(this)}
         />
         </Box>
       </Paper>

@@ -21,7 +21,7 @@ const config = {
     rules: [js],
   },
   output: {
-    path: path.resolve(__dirname, '../django/frontend/static'),
+    path: path.resolve(__dirname, '../django_project/soilbearing/static'),
     filename: '[name].bundle.js',
     pathinfo: true
   },

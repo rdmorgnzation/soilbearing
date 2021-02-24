@@ -21,4 +21,5 @@ tests/.coverage
 build/
 tests/report/
 .idea
-django/db.sqlite3
+django_project/db.sqlite3
+migrations/*

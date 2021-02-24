@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class FrontendConfig(AppConfig):
+class SoilbearingConfig(AppConfig):
     name = 'soilbearing'

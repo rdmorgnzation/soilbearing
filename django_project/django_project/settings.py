@@ -30,9 +30,9 @@ else:
 
 hosts=os.environ.get('hosts')
 if hosts:
-  ALLOWED_HOSTS = ['*']
-else:
   ALLOWED_HOSTS = hosts.split(' ')
+else:
+  ALLOWED_HOSTS = ['*']
 
 # Application definition
 

@@ -1,6 +1,6 @@
 BLCalc
 ==========
-#### [Click to preview](http://ec2-3-235-222-190.compute-1.amazonaws.com)
+#### [Click to preview](https://www.bajgain.tech)
 This is the program to calculate bearing capacity directly from Excel Sheets(containing SPT datas).
 
 More Details

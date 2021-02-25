@@ -28,8 +28,11 @@ else:
   SECRET_KEY = 'x!q25ev-17dgv5f!c=r_#x_gtpp61xn2w)=jydfk!z1-k50#8('
   DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+hosts=os.environ.get('hosts')
+if hosts:
+  ALLOWED_HOSTS = ['*']
+else:
+  ALLOWED_HOSTS = hosts.split(' ')
 
 # Application definition
 

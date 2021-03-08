@@ -13,6 +13,10 @@ from .methods.vesic import Vesic
 from .methods.bowels import Bowels
 from .methods.IS import IS
 from .methods.teng import Teng
+from .methods.liquifaction import Liquifaction
+from .methods.peck import Peck
+from .methods.tengdef import TengDeflection
+from .methods.meyerhofdef import MeyerhofDeflection
 from .soilproperty import SoilProperty
 
 class Methods(str, Enum):
@@ -26,6 +30,12 @@ class Methods(str, Enum):
     Vesic = 'Vesic'
     IS = 'IS'
     Teng = 'Teng'
+    Liquifaction = 'Liquifaction'
+    Plasix = 'Plasix'
+    Peck = 'Peck'
+    TengDeflection = 'TengDeflection'
+    MeyerhofDeflection = 'MeyerhofDeflection'
+    Bowels2 = 'Bowels2'
 
 FOS = 3
 
@@ -52,25 +62,25 @@ class Solver:
         footing_type = self._footing[FootingData.Type]
         mat = self._soilLayer.get(self._footing[FootingData.Depth])
         if footing_type==FootingType.Circular:
-            return terzaghi.circular_capacity(
-                        mat[SoilProperty.cohesion],
+            return (terzaghi.circular_capacity(
+                        mat[SoilProperty.cu],
                         mat[SoilProperty.phi],
                         mat[SoilProperty.gamma],
-                        mat[SoilProperty.surcharge]
-                    ) / FOS
+                        mat[SoilProperty.total_effective_stress]
+                    ) - mat[SoilProperty.total_effective_stress])/ FOS
         elif footing_type==FootingType.Square:
-            return terzaghi.square_capacity(
-                        mat[SoilProperty.cohesion],
+            return (terzaghi.square_capacity(
+                        mat[SoilProperty.cu],
                         mat[SoilProperty.phi],
                         mat[SoilProperty.gamma],
-                        mat[SoilProperty.surcharge]
-                    ) / FOS
-        return terzaghi.strip_capacity(
-                        mat[SoilProperty.cohesion],
+                        mat[SoilProperty.total_effective_stress]
+                    ) - mat[SoilProperty.total_effective_stress])/ FOS
+        return (terzaghi.strip_capacity(
+                        mat[SoilProperty.cu],
                         mat[SoilProperty.phi],
                         mat[SoilProperty.gamma],
-                        mat[SoilProperty.surcharge]
-                    ) / FOS
+                        mat[SoilProperty.total_effective_stress]
+                    ) - mat[SoilProperty.total_effective_stress])/ FOS
 
     def calc_meyerhoff(self):
         meyerhof = Meyerhof(
@@ -79,13 +89,13 @@ class Solver:
                     self._soilLayer[MaterialData.WaterDepth]
                 )
         mat = self._soilLayer.get(self._footing[FootingData.Depth])
-        return meyerhof.capacity(
-                    mat[SoilProperty.cohesion],
+        return (meyerhof.capacity(
+                    mat[SoilProperty.cu],
                     mat[SoilProperty.phi],
                     mat[SoilProperty.gamma],
                     self._footing[FootingData.Length],
-                    mat[SoilProperty.surcharge]
-                ) / FOS
+                    mat[SoilProperty.total_effective_stress]
+                ) - mat[SoilProperty.total_effective_stress])/ FOS
 
     def calc_hansen(self):
         hansen = Hansen(
@@ -94,13 +104,13 @@ class Solver:
                     self._soilLayer[MaterialData.WaterDepth]
                 )
         mat = self._soilLayer.get(self._footing[FootingData.Depth])
-        return hansen.capacity(
-                    mat[SoilProperty.cohesion],
+        return (hansen.capacity(
+                    mat[SoilProperty.cu],
                     mat[SoilProperty.phi],
                     mat[SoilProperty.gamma],
                     self._footing[FootingData.Length],
-                    mat[SoilProperty.surcharge]
-                ) / FOS
+                    mat[SoilProperty.total_effective_stress]
+                ) - mat[SoilProperty.total_effective_stress])/ FOS
 
     def calc_vesic(self):
         vesic = Vesic(
@@ -109,13 +119,13 @@ class Solver:
                     self._soilLayer[MaterialData.WaterDepth]
                 )
         mat = self._soilLayer.get(self._footing[FootingData.Depth])
-        return vesic.capacity(
-                    mat[SoilProperty.cohesion],
+        return (vesic.capacity(
+                    mat[SoilProperty.cu],
                     mat[SoilProperty.phi],
                     mat[SoilProperty.gamma],
                     self._footing[FootingData.Length],
-                    mat[SoilProperty.surcharge]
-                ) / FOS
+                    mat[SoilProperty.total_effective_stress]
+                ) - mat[SoilProperty.total_effective_stress])/ FOS
 
     def calc_bowels(self):
         avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
@@ -123,7 +133,7 @@ class Solver:
             avg_N60,
             self._footing[FootingData.Depth],
             self._footing[FootingData.Width]
-        )
+        ) / 3
 
     def calc_IS(self):
         avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
@@ -133,14 +143,55 @@ class Solver:
             self._footing[FootingData.Width]
         )
 
-    def calc_teng(self):
+    def calc_peck(self):
         avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
-        return Teng.capacity(
+        return Peck.capacity(
             avg_N60,
             self._footing[FootingData.Depth],
             self._footing[FootingData.Width],
             self._soilLayer[MaterialData.WaterDepth]
         )
+
+    def calc_tengdef(self):
+        avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
+        return TengDeflection.capacity(
+            avg_N60,
+            self._footing[FootingData.Depth],
+            self._footing[FootingData.Width],
+            self._soilLayer[MaterialData.WaterDepth]
+        )
+
+    def calc_meyerofdeff(self):
+        avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
+        return MeyerhofDeflection.capacity(
+            avg_N60,
+            self._footing[FootingData.Depth],
+            self._footing[FootingData.Width],
+            self._soilLayer[MaterialData.WaterDepth]
+        )
+
+    def calc_bowels2(self):
+        return self.calc_meyerofdeff()*1.5
+
+    def calc_teng(self):
+        avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
+        teng =  Teng(
+            self._footing[FootingData.Depth],
+            self._footing[FootingData.Width],
+            self._soilLayer[MaterialData.WaterDepth]
+        )
+        footing_type = self._footing[FootingData.Type]
+        if footing_type==FootingType.Circular or footing_type==FootingType.Square:
+            return teng.circular_capacity(avg_N60)
+        else:
+            return teng.strip_capacity(avg_N60)
+    
+    def calc_lpi(self):
+        return Liquifaction.LPI(self._soilLayer)
+
+    def calc_plasix(self):
+        from .methods.plasix import Plasix
+        return Plasix.calculate(self._soilLayer,self._footing[FootingData.Depth])
 
     def run(self, methods=Methods): #all method if not selected
         """
@@ -162,6 +213,18 @@ class Solver:
                 results[method] = self.calc_IS()
             elif method == Methods.Teng:
                 results[method] = self.calc_teng()
+            elif method == Methods.Liquifaction:
+                results[method] = self.calc_lpi()
+            elif method == Methods.Plasix:
+                results[method] = self.calc_plasix()
+            elif method == Methods.Peck:
+                results[method] = self.calc_peck()
+            elif method == Methods.TengDeflection:
+                results[method] = self.calc_tengdef()
+            elif method == Methods.MeyerhofDeflection:
+                results[method] = self.calc_meyerofdeff()
+            elif method == Methods.Bowels2:
+                results[method] = self.calc_bowels2()
             else:
                 pass
         return results

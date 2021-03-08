@@ -62,7 +62,7 @@ class Meyerhof:
         """
         c_term = cohesion*self.Nc(phi)*sc*dc
         q_term = surchage*self.Nq(phi)*sq*dq
-        y_term = 0.5*gamma*self.width_footing*self.Ny(phi)*sy*dy
+        y_term = 0.5*gamma*9.81*self.width_footing*self.Ny(phi)*sy*dy
         return c_term+q_term*self.rw1+y_term*self.rw2
 
 if __name__ == "__main__":

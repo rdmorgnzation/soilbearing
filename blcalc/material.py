@@ -13,25 +13,22 @@ class MaterialData(Enum):
     Soil material info
     """
     WaterDepth = 'WaterDepth'
+    ID = 'ID' #For caching prupose, internal
+    Location = 'Location'
 
 def _group_index_correction(group_index):
     """
     The input group_index may not contain proper group_index as required by problem
-    Fix it,
-    Like L was found in various logs as I
     """
     if len(group_index)==1:
         #just to make sure 2 letter group_index is available
         group_index=group_index+group_index
-    if group_index[1]=='I':
-        #Is I for intermediate[not standard] or is it actually L
-        group_index=group_index[0]+'L'
-    if not group_index[0] in ['S','M','G','C','P','O']:
-        group_index=group_index[1]+group_index[1]
     if not group_index[0] in ['S','M','G','C','P','O']:
         #cannot determine make it clay
         #@TODO add fail here
-        group_index='C'+group_index[1]
+        group_index=group_index[1]+group_index[0]
+    if not group_index[0] in ['S','M','G','C','P','O']:
+        group_index='C'+group_index[1]#failed to determine type
     return group_index
 
 # _clamp result between min and max values
@@ -41,6 +38,12 @@ def _clamp(value, amin, amax):
     if value>amax:
         return amax
     return value
+
+def _need_dil_correction(group_index):
+    chk = group_index[0] in ['S','M','O'] or group_index[1] in ['S','M','O']
+    if group_index[0] in ['G','C']:
+        return False
+    return chk
 
 class Material(Base):
     """
@@ -59,12 +62,27 @@ class Material(Base):
     def _get_n(self):
         """
         Get n_60 value
-        No overburden is applied since we have shallow depth(more errors)
-        - Dilitarcy correction is applied for sand
-        """#@Needs to fix it for general case
-        n_60 = 0.55 * 1 * 1 * 0.75 * self._data[SoilProperty.SPT_N] /0.6
-        if not self.is_clayey() and n_60>15: #apply dilitracy correction
+        """
+        n_60 = self._data[SoilProperty.SPT_N]
+        #Apply dilatracy correction
+        if _need_dil_correction(self._data[SoilProperty.GI]) and n_60>15 and self._data[SoilProperty.depth] > self._data[SoilProperty.water_depth]:
             n_60 = 15 + 0.5 * (n_60 - 15)
+        if self._data[SoilProperty.depth]<3:
+            cr = 0.7
+        elif self._data[SoilProperty.depth]<4:
+            cr = 0.75
+        elif self._data[SoilProperty.depth]<6:
+            cr = 0.85
+        elif self._data[SoilProperty.depth]<10:
+            cr = 0.95
+        else:
+            cr = 1.
+        n_60 = 0.55 * 1 * 1 * cr * n_60 /0.6
+        #Apply overburden correction
+        cor = 9.78*((1/self._data[SoilProperty.vertical_effective_stress])**0.5)
+        if cor>1.7:
+            cor=1.7
+        n_60 = n_60*cor
         return n_60
 
     def _get_gamma(self):
@@ -76,7 +94,7 @@ class Material(Base):
             gamma = 16.8 + 0.15*self._data[SoilProperty.N60]
         else:
             gamma = 16 + 0.1 * self._data[SoilProperty.N60]
-        gamma=_clamp(gamma,10,2.8*9.81)#do we need this
+        #gamma=_clamp(gamma,10,2.8*9.81)#do we need this
         return gamma
 
     # Note: The unconfined compressive strength value is two times undrained shear strength. The
@@ -175,15 +193,20 @@ class Material(Base):
             self._data[SoilProperty.packing_case] = self._get_packing_state()
         if SoilProperty.gamma not in self._data:
             self._data[SoilProperty.gamma] = self._get_gamma()
-        if SoilProperty.cohesion not in self._data:
-            self._data[SoilProperty.cohesion] = self._get_cu()
+        #Check and adjust values of qu, cu and phi as necessary
+        if SoilProperty.phi not in self._data and SoilProperty.cu not in self._data and SoilProperty.qu in self._data:
+            if self.is_clayey():
+                self._data[SoilProperty.phi] = 0.
+                self._data[SoilProperty.cu] = self._data[SoilProperty.qu] / 2
+        if SoilProperty.cu not in self._data:
+            self._data[SoilProperty.cu] = self._get_cu()
         if SoilProperty.phi not in self._data:
             self._data[SoilProperty.phi] = self._get_phi()
         if SoilProperty.elasticity not in self._data:
             self._data[SoilProperty.elasticity] = self._get_e()
         if SoilProperty.nu not in self._data:
             if self.is_clayey():
-                self._data[SoilProperty.nu] = 0.5
+                self._data[SoilProperty.nu] = 0.4
             else:
                 self._data[SoilProperty.nu] = 0.3
         #update data to this dict
@@ -194,21 +217,34 @@ class LayerSoil(Base):
     Use to determine multiple layer of soil
     so include surchage info also
     """
-    def __init__(self, data, water_depth=0):
+    def __init__(self, data, water_depth=0,id=-1,location='Undefined'):
         super().__init__(self)
         self[MaterialData.WaterDepth] = water_depth
-        #@TODO: fix other datas based on water depth
+        self[MaterialData.ID] = id
+        self[MaterialData.Location] = location
         self._data = data
         self._values = []
-        prev_surchage = 0.
+        prev_vertical_eff = 0.
+        prev_total_eff = 0.
         prev_depth = 0.
         for layer in data:
-            layer[SoilProperty.surcharge] = prev_surchage
+            if SoilProperty.sat_unit_weight not in layer:
+                layer[SoilProperty.sat_unit_weight]=9.81*(1+layer[SoilProperty.water_per])*layer[SoilProperty.G]/(1+layer[SoilProperty.water_per]*layer[SoilProperty.G])
+            new_depth = layer[SoilProperty.depth]
+            if new_depth<=water_depth:
+                prev_vertical_eff += layer[SoilProperty.gamma]*9.81*(new_depth-prev_depth)
+                prev_total_eff += layer[SoilProperty.gamma]*9.81*(new_depth-prev_depth)
+            else:
+                prev_vertical_eff += (layer[SoilProperty.sat_unit_weight]-9.81)*(new_depth-prev_depth)
+                prev_total_eff += layer[SoilProperty.sat_unit_weight]*(new_depth-prev_depth)
+            layer[SoilProperty.vertical_effective_stress] = prev_vertical_eff
+            layer[SoilProperty.total_effective_stress] = prev_total_eff
+            layer[SoilProperty.water_depth] = water_depth
+            layer[SoilProperty.thickness] = new_depth-prev_depth
+            prev_depth=new_depth
+            #create material
             mat = Material(layer)
             res = mat.get()
-            new_depth = res[SoilProperty.depth]
-            prev_surchage += res[SoilProperty.gamma]*(new_depth-prev_depth)
-            prev_depth=new_depth
             self._values.append(res)
 
     def get_avg_N(self, depth=0.):
@@ -228,7 +264,7 @@ class LayerSoil(Base):
         if row_start==0:
             depths.append(0.)
         else:
-            depth.append(self._values[row_start-1][SoilProperty.depth])
+            depths.append(self._values[row_start-1][SoilProperty.depth])
         for data in self._values[row_start:row_end]:
             Ns.append(data[SoilProperty.N60])
             depths.append(data[SoilProperty.depth])
@@ -251,19 +287,34 @@ class LayerSoil(Base):
         if depth<self._values[0][SoilProperty.depth]:
             mat = copy.copy(self._values[0])
             mat[SoilProperty.depth]=depth
-            mat[SoilProperty.surcharge]=mat[SoilProperty.gamma]*depth
+            if depth<=mat[SoilProperty.water_depth]:
+                mat[SoilProperty.vertical_effective_stress] =  mat[SoilProperty.gamma]*9.81*depth
+                mat[SoilProperty.total_effective_stress] = mat[SoilProperty.gamma]*9.81*depth
+            else:
+                mat[SoilProperty.vertical_effective_stress] =  (mat[SoilProperty.sat_unit_weight]-9.81)*depth
+                mat[SoilProperty.vertical_effective_stress] =  mat[SoilProperty.sat_unit_weight]*depth
             return mat
         size = len(self._values)
         if depth>self._values[size-1][SoilProperty.depth]:
             mat = copy.copy(self._values[size-1])
-            mat[SoilProperty.surcharge]=mat[SoilProperty.surcharge]+mat[SoilProperty.gamma]*(depth-mat[SoilProperty.depth])
+            if depth<=mat[SoilProperty.water_depth]:
+                mat[SoilProperty.vertical_effective_stress] +=  (mat[SoilProperty.gamma]*9.81)*(depth - mat[SoilProperty.depth])
+                mat[SoilProperty.total_effective_stress] += mat[SoilProperty.gamma]*9.81*(depth - mat[SoilProperty.depth])
+            else:
+                mat[SoilProperty.vertical_effective_stress] +=  (mat[SoilProperty.sat_unit_weight]-9.81)*(depth - mat[SoilProperty.depth])
+                mat[SoilProperty.vertical_effective_stress] +=  mat[SoilProperty.sat_unit_weight]*(depth - mat[SoilProperty.depth])
             mat[SoilProperty.depth]=depth
             return mat
         row=0
         while self._values[row][SoilProperty.depth]<depth:
             row+=1
         mat = copy.copy(self._values[row])
-        mat[SoilProperty.surcharge]= mat[SoilProperty.surcharge] - self._values[row-1][SoilProperty.gamma]*(mat[SoilProperty.depth]-depth)
+        if depth<=mat[SoilProperty.water_depth]:
+            mat[SoilProperty.vertical_effective_stress] -=  (mat[SoilProperty.gamma]*9.81)*(mat[SoilProperty.depth]-depth)
+            mat[SoilProperty.total_effective_stress] -= mat[SoilProperty.gamma]*9.81*(mat[SoilProperty.depth]-depth)
+        else:
+            mat[SoilProperty.vertical_effective_stress] -=  (mat[SoilProperty.sat_unit_weight]-9.81)*(mat[SoilProperty.depth]-depth)
+            mat[SoilProperty.vertical_effective_stress] -=  mat[SoilProperty.sat_unit_weight]*(mat[SoilProperty.depth]-depth)
         mat[SoilProperty.depth]=depth
         return mat
 

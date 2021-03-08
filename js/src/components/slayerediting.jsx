@@ -29,20 +29,28 @@ const columns = [
             },{
               name: 'SPT_N',
               key: 'SPT_N',
-              initialEditValue: 10,
+              initialEditValue: 4,
               type: 'numeric',
             },{
               name: 'cohesion',
-              key: 'cohesion',
+              key: 'cu',
               type: 'numeric',
+			  initialEditValue: 4.5,
+            },{
+              name: 'qu',
+              key: 'qu',
+              type: 'numeric',
+			  initialEditValue: 95,
             },{
               name: 'φ',
               key: 'phi',
               type: 'numeric',
+			  initialEditValue: 32,
             },{
               name: 'γ',
               key: 'gamma',
               type: 'numeric',
+			  initialEditValue: 1.824,
             },{
               name: 'N60',
               key: 'N60',
@@ -56,14 +64,46 @@ const columns = [
               key: 'nu',
               type: 'numeric',
             },{
-              name: 'surcharge',
-              key: 'surcharge',
+              name: 'w%',
+              key: 'water_per',
               type: 'numeric',
-            },{
+			  initialEditValue: 0.1749,
+			},{
+              name: 'G',
+              key: 'G',
+              type: 'numeric',
+			  initialEditValue: 2.511,
+			},{
+              name: 'FC',
+              key: 'FC',
+              type: 'numeric',
+			  initialEditValue: 53,
+			},
+];
+
+const all_columns = [
+			...columns,
+            {
               name: 'Packing Case',
               key: 'packing_case',
               type: 'numeric',
-            },         
+            },{
+              name: 'Vertical Effective Stress',
+              key: 'vertical_effective_stress',
+              type: 'numeric',
+            },{
+              name: 'Total Effective Stress',
+              key: 'total_effective_stress',
+              type: 'numeric',
+            },{
+              name: 'γ_sat',
+              key: 'sat_unit_weight',
+              type: 'numeric',
+            },{
+              name: 'thickness',
+              key: 'thickness',
+              type: 'numeric',
+            },
 ];
 
 class slayerediting extends React.Component {
@@ -138,7 +178,7 @@ class slayerediting extends React.Component {
   render() {
     let cols,displayData;
     if(this.state.preview){
-      cols=columns.map(d=>{d.editor=undefined;return d;});
+      cols=all_columns.map(d=>{d.editor=undefined;return d;});
       displayData=this.state.data;
     }else{
       cols=columns.map(d=>{d.editor=FilteredEdit;return d;});

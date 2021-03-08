@@ -48,7 +48,7 @@ class Hansen:
         self.shape_and_depth_factors(length_footing, phi)
         c_term = cohesion*self.Nc(phi)*self.sc*self.dc
         q_term = surchage*self.Nq(phi)*self.sq*self.dq
-        y_term = 0.5*gamma*self.width_footing*self.Ny(phi)*self.sy*self.dy
+        y_term = 0.5*gamma*9.81*self.width_footing*self.Ny(phi)*self.sy*self.dy
         return c_term+q_term*self.rw1+y_term*self.rw2
 
 if __name__ == "__main__":

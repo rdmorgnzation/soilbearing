@@ -14,7 +14,8 @@ const foundation_default = {
             Type: "Square",
             Depth: 1.5,
             Width: 2,
-            Length: 2
+            Length: 2,
+			GWT: 0,
         };
 
 class finfo extends React.Component {
@@ -143,6 +144,22 @@ class finfo extends React.Component {
                </td>
             </tr>
           }
+          <tr>
+            <td>
+              <Typography>Water Level</Typography>
+            </td>
+            <td>
+              <TextField
+                name="GWT"
+                value={foundation.GWT}
+                fullWidth
+                onChange={this.handleChange.bind(this)}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">m</InputAdornment>,
+                  }}
+              />
+            </td>
+          </tr>
         </tbody>  
       </table>
     );

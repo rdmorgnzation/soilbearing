@@ -11,7 +11,6 @@ from .methods.meyerhof import Meyerhof
 from .methods.hansen import Hansen
 from .methods.vesic import Vesic
 from .methods.bowels import Bowels
-from .methods.IS import IS
 from .methods.teng import Teng
 from .methods.liquifaction import Liquifaction
 from .methods.peck import Peck
@@ -28,7 +27,6 @@ class Methods(str, Enum):
     Hansen = 'Hansen'
     Bowels = 'Bowels'
     Vesic = 'Vesic'
-    IS = 'IS'
     Teng = 'Teng'
     Liquifaction = 'Liquifaction'
     Plasix = 'Plasix'
@@ -36,6 +34,7 @@ class Methods(str, Enum):
     TengDeflection = 'TengDeflection'
     MeyerhofDeflection = 'MeyerhofDeflection'
     Bowels2 = 'Bowels2'
+    PlasixShear = 'PlasixShear'
 
 FOS = 3
 
@@ -209,14 +208,16 @@ class Solver:
                 results[method] = self.calc_bowels()
             elif method == Methods.Vesic:
                 results[method] = self.calc_vesic()
-            elif method == Methods.IS:
-                results[method] = self.calc_IS()
             elif method == Methods.Teng:
                 results[method] = self.calc_teng()
             elif method == Methods.Liquifaction:
                 results[method] = self.calc_lpi()
             elif method == Methods.Plasix:
-                results[method] = self.calc_plasix()
+                res = self.calc_plasix()
+                results[method] = res[0]
+                #mat = self._soilLayer.get(self._footing[FootingData.Depth])
+                results[Methods.PlasixShear] = res[1]/3
+                #(res[1]-mat[SoilProperty.total_effective_stress])/FOS
             elif method == Methods.Peck:
                 results[method] = self.calc_peck()
             elif method == Methods.TengDeflection:

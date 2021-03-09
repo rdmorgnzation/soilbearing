@@ -57,7 +57,7 @@ class Material(Base):
         Check first letter and determine if soil is clayey
         """
         group_index = self._data[SoilProperty.GI]
-        return group_index[0] not in ['S','G']
+        return group_index[0] not in ['S','G','M']
 
     def _get_n(self):
         """
@@ -195,7 +195,8 @@ class Material(Base):
             self._data[SoilProperty.gamma] = self._get_gamma()
         #Check and adjust values of qu, cu and phi as necessary
         if SoilProperty.phi not in self._data and SoilProperty.cu not in self._data and SoilProperty.qu in self._data:
-            if self.is_clayey():
+            group_index = self._data[SoilProperty.GI]
+            if self.is_clayey() or group_index[0]=='M':
                 self._data[SoilProperty.phi] = 0.
                 self._data[SoilProperty.cu] = self._data[SoilProperty.qu] / 2
         if SoilProperty.cu not in self._data:
@@ -206,7 +207,7 @@ class Material(Base):
             self._data[SoilProperty.elasticity] = self._get_e()
         if SoilProperty.nu not in self._data:
             if self.is_clayey():
-                self._data[SoilProperty.nu] = 0.4
+                self._data[SoilProperty.nu] = 0.45
             else:
                 self._data[SoilProperty.nu] = 0.3
         #update data to this dict

@@ -25,4 +25,4 @@ django_project/db.sqlite3
 migrations/*
 local_settings.py
 django_project/static/*
-*/results/*
+blcalc/methods/helper/results/*

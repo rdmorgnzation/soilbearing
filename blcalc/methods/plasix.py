@@ -44,7 +44,8 @@ def update_datas(input_datas):
         phi = mat[SoilProperty.phi]
         c = mat[SoilProperty.cu]
         gamma_wet = mat[SoilProperty.sat_unit_weight]
-        gamma_dry = 9.81*float(mat[SoilProperty.gamma])
+        #gamma_dry = 9.81*float(mat[SoilProperty.gamma]), problem with datas
+        #print(gamma_dry, gamma_wet)
         nu = mat[SoilProperty.nu]
         if nu>=0.499:
             nu=0.499
@@ -55,7 +56,7 @@ def update_datas(input_datas):
             G,
             phi,
             c,
-            gamma_dry,
+            gamma_wet,#both same for now,
             gamma_wet,
             nu,
             str(i)
@@ -118,7 +119,7 @@ def plasix_method(input_datas):
         try:
             with open(force_data_file) as f:
                 data = f.read()
-                if len(data.splitlines())>3:
+                if len(data.splitlines())>6:
                     break
         except:
             pass
@@ -151,7 +152,7 @@ class Plasix:
             try:
                 with open(helper_path+'\\results\\%d.txt'%lay[MaterialData.ID]) as f:
                     res = []
-                    for i in range(3):
+                    for i in range(6):
                         res.append(float(f.readline()))
             except IOError:
                 res = plasix_method(lay)
@@ -160,12 +161,12 @@ class Plasix:
                         f.write(str(i)+'\n')
             #print(res)
             if depth<=1.5:
-                ans = res[0]
+                ans = [res[0] , res[3]]
             elif depth<=3:
-                ans = res[1]
+                ans = [res[1], res[4]]
             else:
-                ans = res[2]
-            return ans/-2
+                ans = [res[2], res[5]]
+            return [ans[0]/-2,ans[1]/-2]
         else:
             return 0
         return 0

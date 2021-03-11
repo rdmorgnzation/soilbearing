@@ -110,7 +110,6 @@ class Material(Base):
         """
         return 0.29 * N60**0.72 * 100
 
-    # correction from: https://civilengroup_indexneeringbible.com/subtopics.php?i=91
     def _get_cu(self):
         """
         Get cohesion of soil

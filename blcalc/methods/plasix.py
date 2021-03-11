@@ -8,12 +8,11 @@ import shutil, os
 import pyodbc
 from pathlib import Path
 from blcalc.material import MaterialData
-helper_path = str(Path(__file__).parent / 'helper')
 
 import math
 from ..soilproperty import SoilProperty
 
-def update_datas(input_datas):
+def update_datas(input_datas, helper_path):
     odbc_head = "Driver={Driver do Microsoft Access (*.mdb)}"
     db_path = helper_path+"\\BHLog.DTA\\soildata.mdb"
     conn = pyodbc.connect("{};DBQ={};".format(odbc_head,db_path))
@@ -44,7 +43,9 @@ def update_datas(input_datas):
         phi = mat[SoilProperty.phi]
         c = mat[SoilProperty.cu]
         gamma_wet = mat[SoilProperty.sat_unit_weight]
-        #gamma_dry = 9.81*float(mat[SoilProperty.gamma]), problem with datas
+        gamma_dry = 9.81*float(mat[SoilProperty.gamma])
+        if gamma_dry>gamma_dry:
+            gamma_dry=gamma_wet
         #print(gamma_dry, gamma_wet)
         nu = mat[SoilProperty.nu]
         if nu>=0.499:
@@ -56,7 +57,7 @@ def update_datas(input_datas):
             G,
             phi,
             c,
-            gamma_wet,#both same for now,
+            gamma_dry,
             gamma_wet,
             nu,
             str(i)
@@ -68,7 +69,7 @@ def update_datas(input_datas):
 def findWindow(win_class):
         return win32gui.FindWindow(win_class, None)
 
-def update_data_cache():
+def update_data_cache(helper_path):
     input_program = "C:\\Program Files (x86)\\Plaxis8x\\Geo.exe"
     file = helper_path+"\\BHLog.plx"
     p=subprocess.Popen([input_program, file])
@@ -91,14 +92,14 @@ def create_empty_file(name):
     except:
         pass
 
-def plasix_method(input_datas):
+def plasix_method(input_datas, helper_path):
     batch_program = "C:\\Program Files (x86)\\Plaxis8x\\batch.exe"
     file = helper_path+"\\BHLog.plx"
     #Remove old force datas
     force_data_file = "C:\\Program Files (x86)\\Plaxis8x\\force.txt"
     create_empty_file(force_data_file)
-    update_datas(input_datas)
-    update_data_cache()
+    update_datas(input_datas, helper_path)
+    update_data_cache(helper_path)
     file="C:\\Program Files (x86)\\Plaxis8x\\Examples\\BHLog.plx"
     p=subprocess.Popen([batch_program, file])
     time.sleep(0.5)
@@ -147,16 +148,23 @@ class Plasix:
     """
     @staticmethod
     def calculate(lay, depth):
+        depthx = lay[MaterialData.WaterDepth]
+        conv = float(int(depthx/0.5)*0.5)
+        if depthx>12:
+            depthx=12
+        conv = "%.1f"%conv
+        helper_path = str(Path(__file__).parent / 'helper' / conv)
+        helper_root_path = str(Path(__file__).parent / 'helper')
         if lay[MaterialData.ID]>=0:
             #check if result is stored previously
             try:
-                with open(helper_path+'\\results\\%d.txt'%lay[MaterialData.ID]) as f:
+                with open(helper_root_path+'\\results\\%d.txt'%lay[MaterialData.ID]) as f:
                     res = []
                     for i in range(6):
                         res.append(float(f.readline()))
             except IOError:
-                res = plasix_method(lay)
-                with open(helper_path+'\\results\\%d.txt'%lay[MaterialData.ID],'w') as f:
+                res = plasix_method(lay, helper_path)
+                with open(helper_root_path+'\\results\\%d.txt'%lay[MaterialData.ID],'w') as f:
                     for i in res:
                         f.write(str(i)+'\n')
             #print(res)

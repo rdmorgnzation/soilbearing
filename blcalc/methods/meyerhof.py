@@ -51,15 +51,6 @@ class Meyerhof:
         else:
             dq =1 +0.1*sqrt(Kp)*self.depth_footing/self.width_footing
         dy = dq
-        #Inclination factors
-        """
-        ic = (1 - inclination_angle/90)**2
-        iq = ic
-        if phi == 0:
-            iy = 0
-        else:
-            iy = (1 - inclination_angle/phi)**2
-        """
         c_term = cohesion*self.Nc(phi)*sc*dc
         q_term = surchage*self.Nq(phi)*sq*dq
         y_term = 0.5*gamma*9.81*self.width_footing*self.Ny(phi)*sy*dy
@@ -69,3 +60,12 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
 
+#Inclination factors
+"""
+ic = (1 - inclination_angle/90)**2
+iq = ic
+if phi == 0:
+    iy = 0
+else:
+    iy = (1 - inclination_angle/phi)**2
+"""

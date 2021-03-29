@@ -26,3 +26,4 @@ migrations/*
 local_settings.py
 django_project/static/*
 blcalc/methods/helper/*
+notebook_hidden/*

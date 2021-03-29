@@ -136,7 +136,8 @@ def plasix_method(input_datas, helper_path):
         for h,i in enumerate(dat[1:]):
             #h = 1.5*(h+1)
             #surcharge = get_top_material(input_datas,h)[8]
-            datas.append(float(i.split(' ')[1]))
+            datas.append(float(i))
+            #datas.append(float(i.split(' ')[1]))
             #datas.append((float(i.split(' ')[1])*-2-surcharge)/3)
     os.unlink(force_data_file)
     return datas
@@ -149,9 +150,9 @@ class Plasix:
     @staticmethod
     def calculate(lay, depth):
         depthx = lay[MaterialData.WaterDepth]
-        conv = float(int(depthx/0.5)*0.5)
         if depthx>12:
             depthx=12
+        conv = float(int(depthx/0.5)*0.5)
         conv = "%.1f"%conv
         helper_path = str(Path(__file__).parent / 'helper' / conv)
         helper_root_path = str(Path(__file__).parent / 'helper')

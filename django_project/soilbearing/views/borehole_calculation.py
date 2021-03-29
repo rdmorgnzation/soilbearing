@@ -10,7 +10,7 @@ from blcalc.soilproperty import SoilProperty
 from blcalc.material import LayerSoil
 from blcalc.footing import Footing, FootingType, FootingData
 from blcalc.assembly import Assembly
-from blcalc.solver import Solver
+from blcalc.solver import Solver, Methods
 
 #Return parsed excel file to json
 @api_view(['POST'])
@@ -58,16 +58,29 @@ def get_preview(request):
 def get_result(request):
     data = json_material_to_py(request.data['sheet']['values'])
     soil_layer = LayerSoil(data)
+    water_table = float(request.data['footing']['GWT'])
+    soil_layer2 = LayerSoil(data, water_table)
     footing = Footing()
-    #Change to enum
     request.data['footing']['Type'] = FootingType(request.data['footing']['Type'])
     for prop in request.data['footing']:
-        if prop!='Type':
-          footing[FootingData(prop)] = float(request.data['footing'][prop])
-        else:
+        if prop=='Type':
           footing[FootingData(prop)] = request.data['footing'][prop]
+        elif prop=='GWT':
+          pass
+        else:
+          footing[FootingData(prop)] = float(request.data['footing'][prop])
+    #Run for liquifaction
+    assembly = Assembly(footing, soil_layer2)
+    solver = Solver(assembly)
+    lpi = solver.run([Methods.Liquifaction])[Methods.Liquifaction]
+    #For others
     assembly = Assembly(footing, soil_layer)
     solver = Solver(assembly)
-    result = solver.run()
+    #Run other methods than Plasix and Liquifaction
+    methods = []
+    for i in Methods:
+        if i!=Methods.Plasix and i!=Methods.Liquifaction:
+            methods.append(i)
+    result = solver.run(methods)
+    result[Methods.Liquifaction] = lpi
     return JsonResponse({'results': result})
-

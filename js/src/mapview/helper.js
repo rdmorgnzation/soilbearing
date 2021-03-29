@@ -51,7 +51,6 @@ function getBC(lat, lon, depth, data, methodid){
   let m0=depths[mid];
   let r = (depth-m0)/(m1-m0);
   let out = {};
-  console.log(methodid);
   for (let c in methodid) {
     let d = methodid[c];
     let p=[];//If dist 0 no IDW

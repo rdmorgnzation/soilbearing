@@ -19,3 +19,11 @@ def test_data_dir():
     """
     path = Path(__file__).parent.parent / 'media/testdata'
     return path
+
+def secrets_dir():
+    """
+    Returns path of test datas like excel
+    Used for test or notebook
+    """
+    path = Path(__file__).parent.parent / 'secrets'
+    return path

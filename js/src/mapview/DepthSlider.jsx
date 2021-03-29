@@ -57,7 +57,6 @@ export class DepthSlider extends React.Component {
             value={r2a(props.depth) || r2a(props.ranges.min)}
             min={r2a(props.ranges.max)}
             max={r2a(props.ranges.min)}
-            aria-labelledby="vertical-slider"
             track={false}
             marks={marks}
             onChangeCommitted={this.handleChange.bind(this)}

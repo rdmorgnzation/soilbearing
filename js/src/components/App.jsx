@@ -11,10 +11,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
+import Hidden from '@material-ui/core/Hidden';
+import Typography from '@material-ui/core/Typography';
 // icons
-import Home from '@material-ui/icons/Home';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
+import Home from '@material-ui/icons/Home';
 import { connect } from "react-redux";
 
 import actionCreater from '../redux/actionCreators';
@@ -27,6 +29,7 @@ import Results from './results';
 import MainPage from './main_page';
 
 import CustomSnackbar from './CustomSnackbar';
+import SideDrawer from './SideDrawer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   linkIcon: {
     color: 'white',
   },
+  drawerText: {
+    textDecoration: 'none',
+    color: theme.palette.text.primary,
+  },
 }));
 
 const navLinks = [
@@ -71,32 +78,51 @@ const App = (props) => {
     <>
     <CssBaseline />
     <Box className={classes.root}>
-      
       <CustomSnackbar />
       <HashRouter>
         <AppBar position="static"
           color={props.currentTheme === 'light' ?"primary":"#424242"}>
           <Toolbar>
-            <NavLink to="/" className={classes.linkIcon}>
-              <IconButton edge="start" color="inherit" aria-label="home">
-                <Home fontSize="large" />
-              </IconButton>
-            </NavLink>
-            <List
-              component="nav"
-              aria-labelledby="main navigation"
-              className={classes.navDisplayFlex}
-            >
-              {navLinks.map(({ title, path }) => (
-                <NavLink to={path} key={title} className={classes.linkText}>
+            <Hidden smDown>
+              <NavLink to="/" className={classes.linkIcon}>
+                <IconButton edge="start" color="inherit">
+                  <Home fontSize="large" />
+                </IconButton>
+              </NavLink>
+              <List
+                component="nav"
+                className={classes.navDisplayFlex}
+              >
+                {navLinks.map(({ title, path }) => 
+                  <NavLink to={path} key={title} className={classes.linkText}>
+                    <ListItem button>
+                      <ListItemText primary={title} />
+                    </ListItem>
+                  </NavLink>
+                )}
+              </List>
+            </Hidden>
+            <Hidden mdUp>
+              <SideDrawer>
+                <NavLink to="/" className={classes.drawerText}>
                   <ListItem button>
-                    <ListItemText primary={title} />
+                    <ListItemText primary="Home" />
                   </ListItem>
-                </NavLink>
-              ))}
-            </List>
+                </NavLink>                
+                {navLinks.map(({ title, path }) => 
+                  <NavLink to={path} key={title} className={classes.drawerText}>
+                    <ListItem button>
+                      <ListItemText primary={title} />
+                    </ListItem>
+                  </NavLink>
+                )}
+              </SideDrawer>
+              <Typography variant="h5" component="h2">
+                GeoProject
+              </Typography>
+            </Hidden>
             <Tooltip title="Change Theme">
-              <IconButton edge="end" color="inherit" aria-label="theme"
+              <IconButton edge="end" color="inherit"
                 onClick={()=>props.setTheme(nextTheme)}
                 style={{position:'absolute', right: 16}}
               >

@@ -16,5 +16,5 @@ def media_path():
     """
     Returns path of medias
     """
-    path = Path(__file__).parent.parent.parent.parent / 'media'
+    path = Path(os.path.abspath(os.path.join('..'))) / "media"
     return path

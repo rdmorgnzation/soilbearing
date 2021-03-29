@@ -1,4 +1,5 @@
 import React from "react";
+import Link from '@material-ui/core/Link';
 
 class results extends React.Component {
   render() {
@@ -9,13 +10,13 @@ class results extends React.Component {
         &nbsp;): &nbsp;
         <span>
           Icons made by &nbsp;
-          <a href="https://www.flaticon.com/authors/ultimatearm" title="ultimatearm">
+          <Link href="https://www.flaticon.com/authors/ultimatearm" title="ultimatearm">
             ultimatearm
-          </a>&nbsp;
+          </Link>&nbsp;
           from&nbsp;
-          <a href="https://www.flaticon.com/" title="Flaticon">
+          <Link href="https://www.flaticon.com/" title="Flaticon">
             www.flaticon.com
-          </a>
+          </Link>
         </span>
       </div>
     );

@@ -13,11 +13,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Edit from '@material-ui/icons/Edit';
 import cookie from "react-cookies";
 
+import FilteredEdit from './FilteredEdit';
+
 const columns = [
             {
               name: '<depth',
               key: 'depth',
               initialEditValue: 1.,
+              frozen: true,
               type: 'numeric',
             },{
               name: 'GI',
@@ -26,20 +29,28 @@ const columns = [
             },{
               name: 'SPT_N',
               key: 'SPT_N',
-              initialEditValue: 10,
+              initialEditValue: 4,
               type: 'numeric',
             },{
               name: 'cohesion',
-              key: 'cohesion',
+              key: 'cu',
               type: 'numeric',
+			  initialEditValue: 4.5,
             },{
-              name: 'phi',
+              name: 'qu',
+              key: 'qu',
+              type: 'numeric',
+			  initialEditValue: 95,
+            },{
+              name: 'φ',
               key: 'phi',
               type: 'numeric',
+			  initialEditValue: 32,
             },{
-              name: 'gamma',
+              name: 'γ',
               key: 'gamma',
               type: 'numeric',
+			  initialEditValue: 1.824,
             },{
               name: 'N60',
               key: 'N60',
@@ -49,18 +60,50 @@ const columns = [
               key: 'elasticity',
               type: 'numeric',
             },{
-              name: 'nu',
+              name: 'ν',
               key: 'nu',
               type: 'numeric',
             },{
-              name: 'surcharge',
-              key: 'surcharge',
+              name: 'w%',
+              key: 'water_per',
               type: 'numeric',
-            },{
-              name: 'packing_case',
+			  initialEditValue: 0.1749,
+			},{
+              name: 'G',
+              key: 'G',
+              type: 'numeric',
+			  initialEditValue: 2.511,
+			},{
+              name: 'FC',
+              key: 'FC',
+              type: 'numeric',
+			  initialEditValue: 53,
+			},
+];
+
+const all_columns = [
+			...columns,
+            {
+              name: 'Packing Case',
               key: 'packing_case',
               type: 'numeric',
-            },         
+            },{
+              name: 'Vertical Effective Stress',
+              key: 'vertical_effective_stress',
+              type: 'numeric',
+            },{
+              name: 'Total Effective Stress',
+              key: 'total_effective_stress',
+              type: 'numeric',
+            },{
+              name: 'γ_sat',
+              key: 'sat_unit_weight',
+              type: 'numeric',
+            },{
+              name: 'thickness',
+              key: 'thickness',
+              type: 'numeric',
+            },
 ];
 
 class slayerediting extends React.Component {
@@ -68,7 +111,7 @@ class slayerediting extends React.Component {
     super(props);
     //Check sheet if already created?
     if(!props.sheet)
-      props.setSheet({attributes:{}, values: []});    
+      props.setSheet({attributes:{}, values: []});
     this.state = {data: {}, preview: false};
   };
   
@@ -85,29 +128,7 @@ class slayerediting extends React.Component {
       _SB.toast.info("No row selected");
     }
   }
-  
-  onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-      const rows = this.props.sheet.values.slice();
-      // Validate updated
-      let filtered={};
-      for (let i in updated){
-        if (i=="GI"){
-          let vl = updated[i].toUpperCase();
-          filtered[i] = vl;
-        }else{
-          if (!isNaN(updated[i]))
-            filtered[i] = updated[i];
-        }
-      }
-      for (let i = fromRow; i <= toRow; i++) {
-        rows[i] = { ...rows[i], ...filtered };
-      }
-      this.props.setSheet({
-                    ...this.props.sheet,
-                    values: rows
-                    });
-  };
-  
+    
   onAddRow() {
     let newData = {};
     for (let i in columns){
@@ -125,7 +146,7 @@ class slayerediting extends React.Component {
     }); 
   }
   
-  onSelectionChange({rowIdx}){
+  onSelectionChange(rowIdx){
     this.setState({selectedRow: rowIdx});
   }
   
@@ -145,15 +166,22 @@ class slayerediting extends React.Component {
     .then(response => response.json())
     .then(data => this.setState({data: data.values, preview: true}))
     .catch(error => _SB.toast.error(error.message));
-  }  
-  
+  }
+    
+  onRowsChange(datas, pos){
+    this.props.setSheet({
+                    ...this.props.sheet,
+                    values: datas
+                    });
+  }
+    
   render() {
     let cols,displayData;
     if(this.state.preview){
-      cols=columns.map(d=>{d.editable=false;return d;});
+      cols=all_columns.map(d=>{d.editor=undefined;return d;});
       displayData=this.state.data;
     }else{
-      cols=columns.map(d=>{d.editable=true;return d;});
+      cols=columns.map(d=>{d.editor=FilteredEdit;return d;});
       displayData=[];
       if(this.props.sheet)
         displayData=this.props.sheet.values;
@@ -196,11 +224,9 @@ class slayerediting extends React.Component {
         <Box style={{color:"black"}}>
         <ReactDataGrid
           columns={cols}
-          rowGetter={i => displayData[i]}
-          rowsCount={displayData.length}
-          onGridRowsUpdated={this.onGridRowsUpdated}
-          enableCellSelect={!this.state.preview}
-          onCellSelected={this.onSelectionChange.bind(this)}
+          rows={displayData}
+          onRowsChange={this.onRowsChange.bind(this)}
+          onRowClick={this.onSelectionChange.bind(this)}
         />
         </Box>
       </Paper>

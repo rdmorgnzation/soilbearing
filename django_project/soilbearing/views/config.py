@@ -5,6 +5,11 @@ from rest_framework.decorators import api_view
 file_list = [
     {
        'text': 'DEFAULT',
+       'description': '2x2 foundation, Bearing Capacities, LPI',
+       'file': '/static/new.json',
+       },
+    {
+       'text': 'OLD',
        'description': '2x2 foundation, Bearing Capacities(*old)',
        'file': '/static/old.json',
        },

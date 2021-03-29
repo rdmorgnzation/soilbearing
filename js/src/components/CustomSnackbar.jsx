@@ -31,7 +31,6 @@ class CustomSnackbar extends React.Component {
           action={[
           <IconButton
           key="close"
-          aria-label="close"
           color="inherit"
           onClick={this.handleClose.bind(this)}
           >

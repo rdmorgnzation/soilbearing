@@ -62,7 +62,7 @@ export class App extends React.Component {
     // and leaflet is available
     if(this.state.file && window.L){
       return(
-        <Box display='flex' height='100%' >
+        <Box display='flex' height='100%'>
           <Paper style={{width:200,overflow:'auto'}}>
             <List>
               <ListItem>

@@ -27,7 +27,7 @@ function MVTable(props){
                 Object.keys(props.results).map((method)=>
                   <TableRow key="{method}">
                     <TableCell>{method}</TableCell>
-                    <TableCell align="right">{props.results[method]}</TableCell>
+                    <TableCell  >{props.results[method]}</TableCell>
                   </TableRow>
                 )
               }              

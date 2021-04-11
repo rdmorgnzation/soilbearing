@@ -10,7 +10,6 @@ from .methods.terzaghi import Terzaghi
 from .methods.meyerhof import Meyerhof
 from .methods.hansen import Hansen
 from .methods.vesic import Vesic
-from .methods.bowels import Bowels
 from .methods.teng import Teng
 from .methods.liquifaction import Liquifaction
 from .methods.peck import Peck
@@ -33,7 +32,6 @@ class Methods(str, Enum):
     Peck = 'Peck'
     TengDeflection = 'TengDeflection'
     MeyerhofDeflection = 'MeyerhofDeflection'
-    Bowels2 = 'Bowels2'
     PlasixShear = 'PlasixShear'
 
 FOS = 3
@@ -126,14 +124,6 @@ class Solver:
                     mat[SoilProperty.total_effective_stress]
                 ) - mat[SoilProperty.total_effective_stress])/ FOS
 
-    def calc_bowels(self):
-        avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
-        return Bowels.capacity(
-            avg_N60,
-            self._footing[FootingData.Depth],
-            self._footing[FootingData.Width]
-        ) / 3
-
     def calc_IS(self):
         avg_N60 = self._soilLayer.get_avg_N(self._footing[FootingData.Depth])
         return IS.capacity(
@@ -169,7 +159,7 @@ class Solver:
             self._soilLayer[MaterialData.WaterDepth]
         )
 
-    def calc_bowels2(self):
+    def calc_bowels(self):
         return self.calc_meyerofdeff()*1.5
 
     def calc_teng(self):
@@ -224,8 +214,6 @@ class Solver:
                 results[method] = self.calc_tengdef()
             elif method == Methods.MeyerhofDeflection:
                 results[method] = self.calc_meyerofdeff()
-            elif method == Methods.Bowels2:
-                results[method] = self.calc_bowels2()
             else:
                 pass
         return results

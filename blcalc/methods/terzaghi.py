@@ -60,7 +60,7 @@ class Terzaghi:
             self.rw2 = 1
 
     def __init__(self, width_footing, depth_footing, water_depth=0):
-        Terzaghi.water_level_correction(self, width_footing, depth_footing, water_depth=0)
+        Terzaghi.water_level_correction(self, width_footing, depth_footing, water_depth)
         
     @staticmethod
     def Nc(phi):

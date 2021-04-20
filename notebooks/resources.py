@@ -7,6 +7,8 @@ Some initial setups
 import os
 import sys
 from pathlib import Path
+import resources #Must be 1st line
+import pandas as pd
 
 module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:

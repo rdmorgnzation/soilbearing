@@ -206,7 +206,7 @@ class Solver:
                 res = self.calc_plasix()
                 results[method] = res[0]
                 #mat = self._soilLayer.get(self._footing[FootingData.Depth])
-                results[Methods.PlasixShear] = res[1]/3
+                results[Methods.PlasixShear] = res[1]
                 #(res[1]-mat[SoilProperty.total_effective_stress])/FOS
             elif method == Methods.Peck:
                 results[method] = self.calc_peck()

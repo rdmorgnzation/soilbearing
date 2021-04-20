@@ -50,8 +50,8 @@ class GeoCoder:
                 locator = i(user_agent=self._user_agent)
                 location = locator.geocode(name)
                 result = (location.latitude, location.longitude, name)
-            except GeocoderUnavailable:
-                print("Unable to connect, retrying")
+            except:
+                pass
             retries += 1
             self.count = (self.count+1)%len(SERVICES)
         return result

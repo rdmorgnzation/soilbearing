@@ -7,7 +7,6 @@ __pycache__/
 .ipynb_checkpoints
 *.egg-info
 *.pot
-*.bundle.js
 .tox/
 secrets/
 __pycache__

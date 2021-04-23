@@ -119,10 +119,10 @@ class Material(Base):
         if self.is_clayey():
             c_undrained = self.qu(self._data[SoilProperty.N60])/2
             #c_undrained=_clamp(c_undrained, 10, 103)
-        # Plasix calculation needs very small c_undrained
+        # Plaxis calculation needs very small c_undrained
         #if c_undrained<0.21:
         #    c_undrained = 0.21
-        #use 0.2 as per plasix recommendation
+        #use 0.2 as per plaxis recommendation
         return c_undrained#the cu is always 103 check with small value of n_60, some mistake maybe
 
     def _get_packing_state(self):
@@ -154,7 +154,7 @@ class Material(Base):
         phi = self.phi(self._data[SoilProperty.N60])
         ### Ok let's remove for clay
         if self.is_clayey():
-            phi=0 #very small value for plasix:::@TODO 0.01
+            phi=0 #very small value for plaxis:::@TODO 0.01
         return phi
 
     def _get_e(self):

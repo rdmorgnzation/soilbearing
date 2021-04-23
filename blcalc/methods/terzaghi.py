@@ -60,7 +60,7 @@ class Terzaghi:
             self.rw2 = 1
 
     def __init__(self, width_footing, depth_footing, water_depth=0):
-        Terzaghi.water_level_correction(self, width_footing, depth_footing, water_depth=0)
+        Terzaghi.water_level_correction(self, width_footing, depth_footing, water_depth)
         
     @staticmethod
     def Nc(phi):
@@ -83,10 +83,10 @@ class Terzaghi:
         return cohesion*self.Nc(phi) + surchage*self.Nq(phi)*self.rw1 + 0.5*gamma*9.81*self.width_footing*self.Ny(phi)*self.rw2
 
     def square_capacity(self, cohesion, phi, gamma ,surchage=0):
-        return 1.2*cohesion*self.Nc(phi) + surchage*self.Nq(phi)*self.rw1 + 0.4*gamma*9.81*self.width_footing*self.Ny(phi)*self.rw2
+        return 1.3*cohesion*self.Nc(phi) + surchage*self.Nq(phi)*self.rw1 + 0.4*gamma*9.81*self.width_footing*self.Ny(phi)*self.rw2
 
     def circular_capacity(self, cohesion, phi, gamma ,surchage=0):
-        return 1.2*cohesion*self.Nc(phi) + surchage*self.Nq(phi)*self.rw1 + 0.3*gamma*9.81*self.width_footing*self.Ny(phi)*self.rw2
+        return 1.3*cohesion*self.Nc(phi) + surchage*self.Nq(phi)*self.rw1 + 0.3*gamma*9.81*self.width_footing*self.Ny(phi)*self.rw2
 
 if __name__ == "__main__":
     import doctest

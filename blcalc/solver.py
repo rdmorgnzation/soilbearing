@@ -28,11 +28,11 @@ class Methods(str, Enum):
     Vesic = 'Vesic'
     Teng = 'Teng'
     Liquifaction = 'Liquifaction'
-    Plasix = 'Plasix'
+    Plaxis = 'Plaxis'
     Peck = 'Peck'
     TengDeflection = 'TengDeflection'
     MeyerhofDeflection = 'MeyerhofDeflection'
-    PlasixShear = 'PlasixShear'
+    PlaxisShear = 'PlaxisShear'
 
 FOS = 3
 
@@ -178,9 +178,9 @@ class Solver:
     def calc_lpi(self):
         return Liquifaction.LPI(self._soilLayer)
 
-    def calc_plasix(self):
-        from .methods.plasix import Plasix
-        return Plasix.calculate(self._soilLayer,self._footing[FootingData.Depth])
+    def calc_plaxis(self):
+        from .methods.plaxis import Plaxis
+        return Plaxis.calculate(self._soilLayer,self._footing[FootingData.Depth])
 
     def run(self, methods=Methods): #all method if not selected
         """
@@ -202,11 +202,11 @@ class Solver:
                 results[method] = self.calc_teng()
             elif method == Methods.Liquifaction:
                 results[method] = self.calc_lpi()
-            elif method == Methods.Plasix:
-                res = self.calc_plasix()
+            elif method == Methods.Plaxis:
+                res = self.calc_plaxis()
                 results[method] = res[0]
                 #mat = self._soilLayer.get(self._footing[FootingData.Depth])
-                results[Methods.PlasixShear] = res[1]/3
+                results[Methods.PlaxisShear] = res[1]
                 #(res[1]-mat[SoilProperty.total_effective_stress])/FOS
             elif method == Methods.Peck:
                 results[method] = self.calc_peck()

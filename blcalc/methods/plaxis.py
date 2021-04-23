@@ -92,7 +92,7 @@ def create_empty_file(name):
     except:
         pass
 
-def plasix_method(input_datas, helper_path):
+def plaxis_method(input_datas, helper_path):
     batch_program = "C:\\Program Files (x86)\\Plaxis8x\\batch.exe"
     file = helper_path+"\\BHLog.plx"
     #Remove old force datas
@@ -143,9 +143,9 @@ def plasix_method(input_datas, helper_path):
     return datas
 
 #do simulation
-class Plasix:
+class Plaxis:
     """
-    Plasix method
+    Plaxis method
     """
     @staticmethod
     def calculate(lay, depth):
@@ -164,7 +164,7 @@ class Plasix:
                     for i in range(6):
                         res.append(float(f.readline()))
             except IOError:
-                res = plasix_method(lay, helper_path)
+                res = plaxis_method(lay, helper_path)
                 with open(helper_root_path+'\\results\\%d.txt'%lay[MaterialData.ID],'w') as f:
                     for i in res:
                         f.write(str(i)+'\n')

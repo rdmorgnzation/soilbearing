@@ -7,7 +7,7 @@ class Teng:
     """
     Teng method
     """
-    def __init__(self, width_footing, depth_footing, water_depth=0):
+    def __init__(self, depth_footing, width_footing, water_depth=0):
         Terzaghi.water_level_correction(self, width_footing, depth_footing, water_depth)
     
     def circular_capacity(self, N60):
